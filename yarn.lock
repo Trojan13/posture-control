@@ -3276,20 +3276,6 @@ picomatch@^2.2.3:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.0.tgz#f1f061de8f6a4bf022892e2d128234fb98302972"
   integrity sha512-lY1Q/PiJGC2zOv/z391WOTD+Z02bCgsFfvxoXXf6h7kv9o+WmsmzYqrAwY63sNgOxE4xEdq0WyUnXfKeBrSvYw==
 
-planck-js@0.3:
-  version "0.3.31"
-  resolved "https://registry.yarnpkg.com/planck-js/-/planck-js-0.3.31.tgz#dc87a999f6d425633d7abd8c77078fcb5a9babd2"
-  integrity sha512-fwKYnL92pF2nXdMPeBq/Aipu+m8LztcEcNjdcrQm/sWKDR01Ej0g121KS1oO7NW23WnRzxw24a7V4KI2JlFpSg==
-  dependencies:
-    stage-js "^0.9.4"
-
-planck@^1.0.0-alpha.2:
-  version "1.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/planck/-/planck-1.0.0-alpha.2.tgz#7328e80e8f9f06dae8d96a335e5e299a1eb18daf"
-  integrity sha512-rJegXAJEEsYwNyxHMJjtq5OPAU4SZm8eZ5eYhiM6J7B0O1IzLFFTnRxKfaecyVcpkJqW/u2s2va4bnJ64jK89w==
-  dependencies:
-    stage-js "^0.9.4"
-
 pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
@@ -4036,11 +4022,6 @@ stable@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/stable/-/stable-0.1.8.tgz#836eb3c8382fe2936feaf544631017ce7d47a3cf"
   integrity sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==
-
-stage-js@^0.9.4:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/stage-js/-/stage-js-0.9.4.tgz#5d31eb8f33f1ca8d21c2043c6d21e47794b715f5"
-  integrity sha512-fNN6rkYD55T4NUxJE71hixXYS9DoyHVX5S8sQcq5yiozX1kqHP/wnByZwFfdAGNZjb5rROJ90zwb0EbM9U2Jqg==
 
 statuses@~1.5.0:
   version "1.5.0"

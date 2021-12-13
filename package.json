@@ -9,10 +9,7 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "dependencies": {
-    "planck": "^1.0.0-alpha.2",
-    "planck-js": "0.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "parcel": "^2.0.1"
   }

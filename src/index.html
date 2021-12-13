@@ -1,11 +1,26 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <script type="module" src="app.js"></script>
-    <title>Posture Control</title>
-  </head>
-  <body>
-    <h1>Posture Control</h1>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <script type="module" src="app.js"></script>
+  <script type="text/javascript">
+    function onSliderInput(e, btn) {
+      return true;
+    }
+    window.onSliderInput = onSliderInput;
+  </script>
+  <title>Posture Control</title>
+</head>
+
+<body>
+  <h1>Posture Control</h1>
+  <canvas id="canvas" width="600" height="400"></canvas>
+  <br />
+  <input id="angle0" type="range" value="300" min="0" max="360" oninput="onSliderInput()" />
+  <input id="angle1" type="range" value="300" min="0" max="360" oninput="onSliderInput()" />
+  <input id="angle2" type="range" value="300" min="0" max="360" oninput="onSliderInput()" />
+  <input id="angle3" type="range" value="300" min="0" max="360" oninput="onSliderInput()" />
+</body>
+
 </html>
