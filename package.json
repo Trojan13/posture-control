@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "source": "src/index.html",
   "scripts": {
-    "dev": "parcel --open",
+    "run-client": "parcel --open",
+    "run-server": "node server/server.js",
     "build": "parcel build"
   },
   "author": "",
