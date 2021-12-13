@@ -1,0 +1,19 @@
+{
+  "name": "posturecontrol",
+  "version": "1.0.0",
+  "source": "src/index.html",
+  "scripts": {
+    "dev": "parcel --open",
+    "build": "parcel build"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "planck": "^1.0.0-alpha.2",
+    "planck-js": "0.3"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.1"
+  }
+}
