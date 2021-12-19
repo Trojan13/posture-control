@@ -32,8 +32,6 @@ ESP8266WebServer server(port_webserver);
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
-    Serial.println((const char *)type);
-    Serial.println((const char *)payload);
     switch (type)
     {
 
