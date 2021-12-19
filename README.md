@@ -26,7 +26,7 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 
 ## Folder Structure
 
-ESP8266/Client -> The sketch for the ESP8266 which have the MPU6050 connected, connect to the AP and send the sensors data
-ESP8266/Server -> The sketch for the ESP8266 which opens the wifi AP and listens for the websocket data
-Server -> The node.js server which get the data from the serial port connected to the Access Point ESP8266
-src -> The parcel webserver files
+- ESP8266/Client -> The sketch for the ESP8266 which have the MPU6050 connected, connect to the AP and send the sensors data
+- ESP8266/Server -> The sketch for the ESP8266 which opens the wifi AP and listens for the websocket data
+- Server -> The node.js server which get the data from the serial port connected to the Access Point ESP8266
+- src -> The parcel webserver files
