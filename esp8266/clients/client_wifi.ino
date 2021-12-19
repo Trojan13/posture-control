@@ -6,7 +6,7 @@
 using namespace websockets;
 const char *client_name = "client_1";
 const char *ssid = "posture-control";             // The SSID (name) of the Wi-Fi network you want to connect to
-const char *password = "mpu6050";                 // The password of the Wi-Fi network
+const char *password = "mpu6050!";                 // The password of the Wi-Fi network
 const char *websockets_server = "localhost:8085"; //server adress and port
 WebsocketsClient client;
 

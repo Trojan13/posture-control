@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-const char *wifi_password = "mpu6050";
+const char *wifi_password = "mpu6050!";
 const char *wifi_ssid = "posture-control";
 const int wifi_channel = 1;
 const boolean wifi_hidden = false;
@@ -50,7 +50,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     break;
 
     case WStype_TEXT:
-        Serial.println(payload);
+        Serial.println((const char *)payload);
         break;
 
     case WStype_BIN:
