@@ -1,4 +1,4 @@
 # posture-control
 
 ## Architecture
-![Architecture](architecture.jpg)
+![Architecture](/Architecture.jpg)
