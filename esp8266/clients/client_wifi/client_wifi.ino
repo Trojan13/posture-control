@@ -142,11 +142,6 @@ void loop()
     mpu_accel_1->getEvent(&accel_1);
     mpu_accel_2->getEvent(&accel_2);
 
-    Serial.print(gyro_1.gyro.y);
-    Serial.print(",");
-    Serial.print(gyro_2.gyro.y);
-    Serial.println();
-
     DynamicJsonDocument doc(1024);
 
     doc["ws_client"] = client_name;
