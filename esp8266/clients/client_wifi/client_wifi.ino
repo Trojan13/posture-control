@@ -1,14 +1,15 @@
 #include <Adafruit_MPU6050.h>
 #include <ESP8266WiFi.h>
-#include <ArduinoWebsockets.h>
+#include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 
 using namespace websockets;
 const char *client_name = "client_1";
-const char *ssid = "posture-control";             // The SSID (name) of the Wi-Fi network you want to connect to
-const char *password = "mpu6050!";                 // The password of the Wi-Fi network
-const char *websockets_server = "192.168.4.100:81"; //server adress and port
-WebsocketsClient client;
+const char *ssid = "posture-control";            // The SSID (name) of the Wi-Fi network you want to connect to
+const char *password = "mpu6050";                // The password of the Wi-Fi network
+const char *websockets_adress = "192.168.4.1"; // ws adress
+const char *websockets_port = "81";              // ws port
+WebsocketsClient ws_client;
 
 #define MPU6050_1 0x68
 #define MPU6050_2 0x69
@@ -16,6 +17,33 @@ WebsocketsClient client;
 Adafruit_MPU6050 mpu_1, mpu_2;
 Adafruit_Sensor *mpu_gyro_1, *mpu_gyro_2, *mpu_accel_1, *mpu_accel_2;
 bool sensorsSetup;
+int wsStatus = 0;
+
+void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
+{
+
+  switch (type)
+  {
+  case WStype_DISCONNECTED:
+    Serial.printf("[WSc] Disconnected!\n");
+    wsStatus = 0;
+    break;
+  case WStype_CONNECTED:
+  {
+    Serial.printf("[WSc] Connected to url: %s\n", payload);
+
+    wsStatus = 1;
+  }
+  break;
+  case WStype_TEXT:
+    Serial.printf("[WSc] get text: %s\n", payload);
+    break;
+  case WStype_BIN:
+    Serial.printf("[WSc] get binary length: %u\n", length);
+    hexdump(payload, length);
+    break;
+  }
+}
 
 void setup()
 {
@@ -43,8 +71,12 @@ void setupWifi()
   Serial.println("Connection established!");
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());
-  client.connect(websockets_server);
-  client.ping();
+
+  Serial.println("Starting Websocket Server...");
+  ws_client.begin(websockets_adress, websockets_port, "/");
+  webSocket.onEvent(webSocketEvent);
+  webSocket.setReconnectInterval(5000);
+
   Serial.println("Setting up sensors...");
   setupSensors();
 }
@@ -54,6 +86,8 @@ void setupSensors()
   Serial.begin(115200);
   while (!Serial)
     delay(10);
+
+  Serial.println("Adafruit MPU6050 test!");
 
   if (!mpu_1.begin(MPU6050_1))
   {
@@ -93,8 +127,8 @@ void setupSensors()
 
 void loop()
 {
-  client.poll();
-  if (sensorsSetup)
+  ws_client.loop();
+  if (sensorsSetup && wsStatus == 1)
   {
     sensors_event_t gyro_1;
     sensors_event_t gyro_2;
@@ -107,9 +141,14 @@ void loop()
     mpu_accel_1->getEvent(&accel_1);
     mpu_accel_2->getEvent(&accel_2);
 
+    Serial.print(gyro_1.gyro.y);
+    Serial.print(",");
+    Serial.print(gyro_2.gyro.y);
+    Serial.println();
+
     DynamicJsonDocument doc(1024);
 
-    doc["client"] = client_name;
+    doc["ws_client"] = client_name;
     doc["mpu_1"]["gyro"]["x"] = gyro_1.gyro.x;
     doc["mpu_1"]["gyro"]["y"] = gyro_1.gyro.y;
     doc["mpu_1"]["gyro"]["z"] = gyro_1.gyro.z;
@@ -126,8 +165,8 @@ void loop()
 
     String output;
     serializeJson(doc, output);
+    ws_client.sendTXT(output);
     Serial.println(output);
-    client.send(output);
   }
   delay(1000);
 }
