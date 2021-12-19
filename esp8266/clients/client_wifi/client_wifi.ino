@@ -4,10 +4,10 @@
 #include <ArduinoJson.h>
 
 const char *client_name = "client_1";
-const char *ssid = "posture-control";            // The SSID (name) of the Wi-Fi network you want to connect to
-const char *password = "mpu6050!";                // The password of the Wi-Fi network
+const char *ssid = "posture-control";          // The SSID (name) of the Wi-Fi network you want to connect to
+const char *password = "mpu6050!";             // The password of the Wi-Fi network
 const char *websockets_adress = "192.168.4.1"; // ws adress
-const int websockets_port =  81;              // ws port
+const int websockets_port = 81;                // ws port
 WebSocketsClient ws_client;
 
 #define MPU6050_1 0x68
@@ -29,7 +29,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     break;
   case WStype_CONNECTED:
   {
-    Serial.printf("[WSc] Connected to url: %s\n", payload);
+    Serial.printf("[WSc] Connected!\n");
 
     wsStatus = 1;
   }
@@ -127,6 +127,8 @@ void setupSensors()
 void loop()
 {
   ws_client.loop();
+  Serial.println(wsStatus);
+
   if (sensorsSetup && wsStatus == 1)
   {
     sensors_event_t gyro_1;
