@@ -32,20 +32,19 @@ ESP8266WebServer server(port_webserver);
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
-
+    Serial.println((const char *)type);
+    Serial.println((const char *)payload);
     switch (type)
     {
 
     case WStype_DISCONNECTED:
-        Serial.println("Client disconnnected !" + num);
+        Serial.println("Client disconnnected!" + num);
         break;
 
     case WStype_CONNECTED:
     {
         IPAddress ip = webSocket.remoteIP(num);
-        Serial.println("Websocket client connnected !");
-        // send message to client
-        webSocket.sendTXT(num, "Connected");
+        Serial.println("Websocket client connnected!");
     }
     break;
 

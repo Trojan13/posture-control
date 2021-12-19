@@ -7,7 +7,7 @@ using namespace websockets;
 const char *client_name = "client_1";
 const char *ssid = "posture-control";             // The SSID (name) of the Wi-Fi network you want to connect to
 const char *password = "mpu6050!";                 // The password of the Wi-Fi network
-const char *websockets_server = "192.168.4.1:81"; //server adress and port
+const char *websockets_server = "192.168.4.100:81"; //server adress and port
 WebsocketsClient client;
 
 #define MPU6050_1 0x68
@@ -55,8 +55,6 @@ void setupSensors()
   while (!Serial)
     delay(10);
 
-  Serial.println("Adafruit MPU6050 test!");
-
   if (!mpu_1.begin(MPU6050_1))
   {
     Serial.println("Failed to find MPU 1 chip");
@@ -95,6 +93,7 @@ void setupSensors()
 
 void loop()
 {
+  client.poll();
   if (sensorsSetup)
   {
     sensors_event_t gyro_1;
@@ -107,13 +106,6 @@ void loop()
 
     mpu_accel_1->getEvent(&accel_1);
     mpu_accel_2->getEvent(&accel_2);
-
-    Serial.print(gyro_1.gyro.y);
-    Serial.print(",");
-    Serial.print(gyro_2.gyro.y);
-    Serial.println();
-
-    client.poll();
 
     DynamicJsonDocument doc(1024);
 
@@ -134,6 +126,7 @@ void loop()
 
     String output;
     serializeJson(doc, output);
+    Serial.println(output);
     client.send(output);
   }
   delay(1000);
