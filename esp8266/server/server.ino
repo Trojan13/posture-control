@@ -1,6 +1,7 @@
 #include <WebSocketsServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <WebSocketsClient.h>
 
 const char *wifi_password = "mpu6050!";
 const char *wifi_ssid = "posture-control";
@@ -88,8 +89,8 @@ void setup()
     webSocket.begin();
     webSocket.onEvent(webSocketEvent);
 
-    server.on("/", handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
-    server.onNotFound(handleNotFound); // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
+    server.on("/", handleRoot);
+    server.onNotFound(handleNotFound);
 
     server.begin();
 }
