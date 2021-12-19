@@ -3,13 +3,12 @@
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 
-using namespace websockets;
 const char *client_name = "client_1";
 const char *ssid = "posture-control";            // The SSID (name) of the Wi-Fi network you want to connect to
-const char *password = "mpu6050";                // The password of the Wi-Fi network
+const char *password = "mpu6050!";                // The password of the Wi-Fi network
 const char *websockets_adress = "192.168.4.1"; // ws adress
-const char *websockets_port = "81";              // ws port
-WebsocketsClient ws_client;
+const int websockets_port =  81;              // ws port
+WebSocketsClient ws_client;
 
 #define MPU6050_1 0x68
 #define MPU6050_2 0x69
@@ -74,8 +73,8 @@ void setupWifi()
 
   Serial.println("Starting Websocket Server...");
   ws_client.begin(websockets_adress, websockets_port, "/");
-  webSocket.onEvent(webSocketEvent);
-  webSocket.setReconnectInterval(5000);
+  ws_client.onEvent(webSocketEvent);
+  ws_client.setReconnectInterval(5000);
 
   Serial.println("Setting up sensors...");
   setupSensors();
