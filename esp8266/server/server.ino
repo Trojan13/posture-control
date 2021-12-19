@@ -7,7 +7,7 @@ const char *wifi_ssid = "posture-control";
 const int wifi_channel = 1;
 const boolean wifi_hidden = false;
 
-const int port_webserver = 8085;
+const int port_webserver = 80;
 const int port_websocket = 81;
 
 IPAddress local_IP(192, 168, 4, 1);
