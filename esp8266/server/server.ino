@@ -10,8 +10,8 @@ const boolean wifi_hidden = false;
 const int port_webserver = 80;
 const int port_websocket = 5000;
 
-IPAddress local_IP(192, 168, 4, 100);
-IPAddress gateway(192, 168, 4, 100);
+IPAddress local_IP(192, 168, 4, 1);
+IPAddress gateway(192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
 static const char PROGMEM INDEX_HTML[] = R"rawliteral(
