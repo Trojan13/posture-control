@@ -41,8 +41,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 
     case WStype_CONNECTED:
     {
-        IPAddress ip = webSocket.remoteIP(num);
-        Serial.println("Websocket client connnected!");
+        Serial.println("Client connnected!");
     }
     break;
 

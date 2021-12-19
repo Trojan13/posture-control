@@ -70,6 +70,7 @@ void setupWifi()
   Serial.println("Starting Websocket Server...");
   ws_client.begin(websockets_adress, websockets_port, "/");
   ws_client.onEvent(webSocketEvent);
+  ws_client.enableHeartbeat(15000, 3000, 2);
   ws_client.setReconnectInterval(5000);
 
   Serial.println("Setting up sensors...");
@@ -133,11 +134,6 @@ void loop()
 
   mpu_accel_1->getEvent(&accel_1);
   mpu_accel_2->getEvent(&accel_2);
-
-  Serial.print(gyro_1.gyro.y);
-  Serial.print(",");
-  Serial.print(gyro_2.gyro.y);
-  Serial.println();
 
   DynamicJsonDocument doc(1024);
 
