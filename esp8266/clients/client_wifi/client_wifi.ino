@@ -132,8 +132,9 @@ void loop()
     doc["mpu_2"]["accel"]["y"] = accel_2.acceleration.y;
     doc["mpu_2"]["accel"]["z"] = accel_2.acceleration.z;
 
-    client.send(serializeJson(doc, Serial));
+    String output;
+    serializeJson(doc, output);
+    client.send(output);
   }
   delay(1000);
-}
 }
