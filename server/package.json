@@ -7,5 +7,7 @@
     "run-dev": "node server.js",
     "build": "parcel build"
   },
-  "dependencies": {}
+  "dependencies": {
+    "serialport": "^9.2.8"
+  }
 }
