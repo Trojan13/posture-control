@@ -13,13 +13,12 @@ let port = new SerialPort("COM6", {
   baudRate: 115200
 });
 
-
-port.on('open',  ()=> {
+port.on('open', () => {
   console.log('Serial Port Connected...');
   port.pipe(readLineParser);
 });
 
-port.on('error',  (err)=>{
+port.on('error', (err) => {
   console.log(err);
 });
 
