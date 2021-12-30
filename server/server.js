@@ -1,5 +1,5 @@
 const SerialPort = require("serialport");
-const WebSocket = require('ws')
+const WebSocket = require('ws');
 
 const readLineParser = new SerialPort.parsers.Readline();
 const wss = new WebSocket.Server({ port: 8085 });
@@ -28,7 +28,7 @@ wss.on('connection', ws => {
   })
 
   readLineParser.on('data', (data) => {
-    ws.send(JSON.stringify(data));
+    ws.send(data);
     console.log(data);
   });
 });
