@@ -14,6 +14,14 @@ let port = new SerialPort("COM6", {
 });
 
 
+port.on('open',  ()=> {
+  console.log('Serial Port Connected...');
+  port.pipe(readLineParser);
+});
+
+port.on('error',  (err)=>{
+  console.log(err);
+});
 
 wss.on('connection', ws => {
   ws.on('message', message => {
