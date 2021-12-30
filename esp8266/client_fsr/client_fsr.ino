@@ -9,8 +9,8 @@ const char *websockets_adress = "192.168.4.1"; // ws adress
 const int websockets_port = 5000;              // ws port
 WebSocketsClient ws_client;
 
-#define FSR_1_PIN 0;
-#define FSR_2_PIN 1;
+const int FSR_1_PIN = 16;
+const int FSR_2_PIN = 5;
 
 int fsr1Read;
 int fsr2Read;
@@ -90,7 +90,7 @@ void setupSensors()
 
 int analogReadOnDigital(int readPin)
 {
-  if (readPin == FSR_1_PIN)
+  if (readPin == 1)
   {
     digitalWrite(FSR_1_PIN, HIGH);
     digitalWrite(FSR_2_PIN, LOW);
@@ -112,10 +112,10 @@ void loop()
 
   doc["ws_client"] = client_name;
 
-  fsr1Read = analogReadOnDigital(FSR_1_PIN);
-  delay(200);
-  fsr2Read = analogReadOnDigital(FSR_2_PIN);
-  delay(200);
+  fsr1Read = analogReadOnDigital(1);
+  delay(100);
+  fsr2Read = analogReadOnDigital(2);
+  delay(100);
   doc["fsr_1"] = fsr1Read;
   doc["fsr_2"] = fsr2Read;
 
