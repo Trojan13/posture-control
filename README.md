@@ -11,11 +11,18 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 ## Todo
 
 - [x] Solder ESP8266 #1
-- [ ] Solder ESP8266 #2
+- [x] Solder ESP8266 #2
+- [x] Test FSR
+- [x] Solder ESP8266 with FSR #3
+- [x] make client.ino for fsr
 - [x] Make client.ino work
 - [x] Make server.ino work
 - [x] Test with two clients
-- [ ] Make server.ino work with webserver
+- [x] Test with three clients
+- [x] Make server.ino work with webserver
+- [ ] Server.js should process data further
+- [ ] Display the data on frontend
+- [ ] Look into neural networks for posture recognition
 - [ ] Improve webserver data handling
 - [ ] Smooth values from sensors
 - [ ] Use multiple axis
