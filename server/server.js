@@ -1,12 +1,33 @@
-const { IMU, Board } = require("johnny-five");
-const board = new Board({
-  port: "COM3"
+const SerialPort = require("serialport");
+
+SerialPort.list(function (err, ports) {
+  ports.forEach(function (port) {
+    console.log(port.comName, port.pnpId, port.manufacturer); // or console.log(port)
+  });
+});
+let port = new SerialPort("COM5", {
+  baudRate: 115200
 });
 
-board.on("ready", () => {
-  const imu = new IMU({
-    controller: "MPU6050"
-  });
+port.on('open', function () {
+  console.log('Serial Port Connected...');
+});
+
+let buffer = '';
+port.on('data', function (chunk) {
+  buffer += chunk;
+  var answers = buffer.split(/\r?\n/);
+  buffer = answers.pop();
+
+  if (answer.length > 0)
+    console.log(answer[0]);
+});
+
+port.on('error', function (err) {
+  console.log(err);
+});
+
+/*
   const WebSocket = require('ws')
   const wss = new WebSocket.Server({ port: 8085 })
 
@@ -21,4 +42,4 @@ board.on("ready", () => {
       ws.send(JSON.stringify(d));
     });
   });
-});
+  */

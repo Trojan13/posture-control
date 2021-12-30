@@ -7,7 +7,5 @@
     "run-dev": "node server.js",
     "build": "parcel build"
   },
-  "dependencies": {
-    "johnny-five": "^2.1.0"
-  }
+  "dependencies": {}
 }
