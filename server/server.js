@@ -4,6 +4,10 @@ const WebSocket = require('ws');
 const readLineParser = new SerialPort.parsers.Readline();
 const wss = new WebSocket.Server({ port: 8085 });
 
+let pressureArray = [];
+let anglesArray1 = [];
+let anglesArray2 = [];
+
 SerialPort.list().then((ports) => {
   ports.forEach(function (port) {
     console.log(port);
@@ -28,7 +32,20 @@ wss.on('connection', ws => {
   })
 
   readLineParser.on('data', (data) => {
-    ws.send(data);
+    const comPortdataObject = JSON.parse(data);
+    if (comPortdataObject.ws_client === "client_3") {
+      pressureArray = [comPortdataObject.fsr_1,comPortdataObject.fsr_2];
+    }
+    if (comPortdataObject.ws_client === "client_1" ) {
+      anglesArray1 = [comPortdataObject.mpu_1.accel.y,comPortdataObject.mpu_2.accel.y];
+    }
+    if (comPortdataObject.ws_client === "client_2" ) {
+      anglesArray2 = [comPortdataObject.mpu_1.accel.y,comPortdataObject.mpu_2.accel.y];
+    }
+    if(pressureArray && anglesArray1 && anglesArray2) {
+    ws.send(JSON.stringify({angle}));
+      
+    }
     console.log(data);
   });
 });
