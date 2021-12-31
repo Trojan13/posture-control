@@ -2,9 +2,9 @@ if (module.hot) {
     module.hot.accept();
 }
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const lines = ["red", "yellow", "green", "blue"];
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const lines = ['red', 'yellow', 'green', 'blue'];
 const start = [200, 400];
 const lineLength = 100;
 
@@ -20,13 +20,11 @@ image.onload = () => {
 function connect() {
     const connection = new WebSocket('ws://localhost:8085');
     connection.onopen = function () {
-        console.log("Connected!");
+        console.log('Connected!');
         // subscribe to some channels
     };
     connection.onmessage = function (e) {
-        console.log(e);
-        const { sensorDataObject } = JSON.parse(e.data);
-        draw([sensorDataObject.angle1, sensorDataObject.angle2, sensorDataObject.angle3, sensorDataObject.angle4], [sensorDataObject.pressure1, sensorDataObject.pressure2]);
+        handleWsMessage(e);
     };
 
     connection.onclose = function (e) {
@@ -61,7 +59,7 @@ function draw(wsAngles = null, wsPressure = null) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let prev = start;
     for (let i = 0; i < lines.length; i++) {
-        const angleValue = wsAngles ? wsAngles[i] : document.getElementById(`angle${i}`).value;
+        const angleValue = wsAngles ? wsAngles[i] : 300;
         const angle = (Math.PI * angleValue) / 180;
         ctx.beginPath();
         ctx.moveTo(...prev);
@@ -80,10 +78,25 @@ function draw(wsAngles = null, wsPressure = null) {
     drawCircle(ctx, wsPressure ? wsPressure[0] : 0, wsPressure ? wsPressure[1] : 0);
     drawFoot(ctx);
 }
+function handleWsMessage(msg) {
+    const parsedMessage = JSON.parse(msg.data);
+    const statusElement = document.getElementById('statusText').innerHTML;
+    const msgTime = new Date(parsedMessage.date).toLocaleTimeString();
+    const msgData = parsedMessage.data;
+    const msgType = parsedMessage.type;
 
-window.onSliderInput = function onSliderInput(e, slider) {
-    return draw();
-};
+    switch (msgType) {
+        case 'status':
+            
+            break;
+        case 'sensor-data':
+            draw([msgData.angle1, msgData.angle2, msgData.angle3, msgData.angle4], [msgData.pressure1, msgData.pressure2]);
+            break;
+        default:
+            console.log(msg);
+            break;
+    }
+}
 
 draw();
 connect();

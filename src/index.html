@@ -15,12 +15,13 @@
 
 <body>
   <h1>Posture Control</h1>
+  <div>Status:</div><div id="statusText">0</div>
+  <br />
+  <br />
   <canvas id="canvas" width="600" height="400"></canvas>
   <br />
-  <input id="angle0" type="range" value="300" min="0" max="360" oninput="onSliderInput()" />
-  <input id="angle1" type="range" value="300" min="0" max="360" oninput="onSliderInput()" />
-  <input id="angle2" type="range" value="300" min="0" max="360" oninput="onSliderInput()" />
-  <input id="angle3" type="range" value="300" min="0" max="360" oninput="onSliderInput()" />
+  <br />
+  <button onclick="onSliderInput()">Calibrate</button>
 </body>
 
 </html>
