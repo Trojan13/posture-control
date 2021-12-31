@@ -20,12 +20,14 @@ image.onload = () => {
 function connect() {
     const connection = new WebSocket('ws://localhost:8085');
     connection.onopen = function () {
+        console.log("Connected!");
         // subscribe to some channels
     };
 
     connection.onmessage = function (e) {
-        const d = JSON.parse(e.data);
-        draw([d.angle1, d.angle2, d.angle3, d.angle4], [d.pressure1, d.pressure2]);
+        console.log(e);
+        const {sensorDataObject} = JSON.parse(e.data);
+        draw([sensorDataObject.angle1, sensorDataObject.angle2, sensorDataObject.angle3, sensorDataObject.angle4], [sensorDataObject.pressure1, sensorDataObject.pressure2]);
     };
 
     connection.onclose = function (e) {
@@ -43,11 +45,11 @@ function connect() {
 
 
 function drawCircle(ctx, pressure1 = 0, pressure2 = 0) {
-    const radius1 = 5 + 30 / 400 * pressure1;
-    const radius2 = 5 + 30 / 400 * pressure2;
+    const radius1 = 5 + 30 / 200 * pressure1;
+    const radius2 = 5 + 30 / 200 * pressure2;
     ctx.beginPath();
-    ctx.arc(60, 90, radius1, 0, 2 * Math.PI, false);
-    ctx.arc(55, 180, radius2, 0, 2 * Math.PI, false);
+    ctx.arc(60, 90, radius2, 0, 2 * Math.PI, false);
+    ctx.arc(55, 180, radius1, 0, 2 * Math.PI, false);
     ctx.fillStyle = 'green';
     ctx.fill();
 }
