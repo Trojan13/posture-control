@@ -23,10 +23,9 @@ function connect() {
         console.log("Connected!");
         // subscribe to some channels
     };
-
     connection.onmessage = function (e) {
         console.log(e);
-        const {sensorDataObject} = JSON.parse(e.data);
+        const { sensorDataObject } = JSON.parse(e.data);
         draw([sensorDataObject.angle1, sensorDataObject.angle2, sensorDataObject.angle3, sensorDataObject.angle4], [sensorDataObject.pressure1, sensorDataObject.pressure2]);
     };
 

@@ -6,12 +6,12 @@ const wss = new WebSocket.Server({ port: 8085 });
 let wssStatus = 0;
 let wsHandle = null;
 let sensorDataObject = {
-  angle1: null,
-  angle2: null,
-  angle3: null,
-  angle4: null,
-  pressure1: null,
-  pressure2: null,
+  angle1: 0,
+  angle2: 0,
+  angle3: 0,
+  angle4: 0,
+  pressure1: 0,
+  pressure2: 0,
 };
 
 SerialPort.list().then((ports) => {
@@ -47,14 +47,13 @@ readLineParser.on('data', (data) => {
         sensorDataObject.angle3 = comPortdataObject.mpu_1.accel.y;
         sensorDataObject.angle4 = comPortdataObject.mpu_2.accel.y;
       }
-      if (sensorDataObject.pressure1 !== null && sensorDataObject.pressure2!== null && sensorDataObject.angle1 !== null&& sensorDataObject.angle2 !== null&& sensorDataObject.angle3!== null && sensorDataObject.angle4!== null) {
+      if (sensorDataObject.pressure1 !== null && sensorDataObject.pressure2 !== null && sensorDataObject.angle1 !== null && sensorDataObject.angle2 !== null && sensorDataObject.angle3 !== null && sensorDataObject.angle4 !== null) {
         wsHandle.send(JSON.stringify({ sensorDataObject }));
       }
       console.log(sensorDataObject);
-    } catch(e) {
-      console.log(e);
-
-     // console.log("ReadLineParser:", data);
+    } catch (e) {
+      console.log("ReadLineParserError: ", e);
+      console.log("ReadLineParser:", data);
     }
   }
 });
