@@ -21,6 +21,8 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 - [x] Test with three clients
 - [x] Make server.ino work with webserver
 - [ ] Server.js should process data further
+- [ ] Calibrate MPU6050 Sensors
+- [ ] Calculate right angles from mpu data
 - [ ] Display the data on frontend
 - [ ] Look into neural networks for posture recognition
 - [ ] Improve webserver data handling
