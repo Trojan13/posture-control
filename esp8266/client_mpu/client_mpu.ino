@@ -6,7 +6,7 @@
 const char *client_name = "mpu_1";
 const char *ssid = "posture-control";                                    // The SSID (name) of the Wi-Fi network you want to connect to
 const char *password = "mpu6050!";                                       // The password of the Wi-Fi network
-const char *websockets_adress = "192.168.4.1/ws/?client=" + client_name; // ws adress
+const char *websockets_adress = "192.168.4.1"; // ws adress
 const int websockets_port = 5000;                                        // ws port
 WebSocketsClient ws_client;
 
@@ -68,7 +68,7 @@ void setupWifi()
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting Websocket Server...");
-  ws_client.begin(websockets_adress, websockets_port);
+  ws_client.begin(websockets_adress, websockets_port,"/ws?client=mpu_1");
   ws_client.onEvent(webSocketEvent);
   ws_client.enableHeartbeat(15000, 3000, 2);
   ws_client.setReconnectInterval(5000);

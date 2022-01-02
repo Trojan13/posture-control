@@ -1,9 +1,11 @@
 #include <WebSocketsServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
 
 const char *wifi_password = "mpu6050!";
 const char *wifi_ssid = "posture-control";
+
 const int wifi_channel = 1;
 const boolean wifi_hidden = false;
 
@@ -41,8 +43,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 
     case WStype_CONNECTED:
     {
+      Serial.println("Connected");
         IPAddress ip = webSocket.remoteIP(num);
-        Serial.println("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+        Serial.println(ip);
+        Serial.println(num);
+        Serial.println((const char *)payload);
+    }
         break;
 
     case WStype_TEXT:
@@ -85,13 +91,21 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 
         delay(100);
 
+        if(MDNS.begin("esp8266")){
+          Serial.println("MDNS initialized...");
+        }
+
         webSocket.begin();
         webSocket.onEvent(webSocketEvent);
 
+      
         server.on("/", handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
         server.onNotFound(handleNotFound); // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
-
+        
         server.begin();
+
+        MDNS.addService("http","tcp",port_webserver);
+        MDNS.addService("ws","tcp",port_websocket);
     }
 
     void loop()
