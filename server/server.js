@@ -52,13 +52,11 @@ readLineParser.on('data', (data) => {
         }
         webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
       } else if (comPortdataObject.type === "status") {
-        const clientName = comPortdataObject.client.split("\ws?client=");
-        if (Array.isArray(clientName)) {
-          clientStatus[clientName[1]] = { ip: comPortdataObject.data.ip, num: comPortdataObject.num, status: comPortdataObject.data.status };
-          webSocketSendData(wsHandle, clientStatus, 'status');
+        const clientName = comPortdataObject.data.client ? comPortdataObject.data.client.split("\ws?client=")[1] : '-';
+        clientStatus[comPortdataObject.clientId] = { ip: comPortdataObject.data.ip, num: comPortdataObject.num, status: comPortdataObject.data.status, name: clientName };
+        webSocketSendData(wsHandle, clientStatus, 'status');
         console.log(clientStatus);
 
-        }
       }
     } catch (e) {
       console.log('ReadLineParserError: ', e);

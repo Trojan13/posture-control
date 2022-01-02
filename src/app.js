@@ -87,7 +87,9 @@ function handleWsMessage(msg) {
 
     switch (msgType) {
         case 'status':
-            statusElement.innerHTML = msgData;
+            statusElement.innerHTML = Object.entries(msgData).map(([key, value]) => {
+                return `ID: ${key} Name: ${value.name} Status: ${value.status} IP: ${value.ip}  <br />`;
+            });
             break;
         case 'sensor-data':
             draw([msgData.angle1, msgData.angle2, msgData.angle3, msgData.angle4], [msgData.pressure1, msgData.pressure2]);
