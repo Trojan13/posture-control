@@ -20,6 +20,9 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 - [x] Test with two clients
 - [x] Test with three clients
 - [x] Make server.ino work with webserver
+- [x] Add status display for clients
+- [ ] Request status on boot for clients
+- [ ] Add function to send data to clients
 - [ ] Server.js should process data further
 - [ ] Calibrate MPU6050 Sensors
 - [ ] Calculate right angles from mpu data
@@ -28,6 +31,7 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 - [ ] Improve webserver data handling
 - [ ] Smooth values from sensors
 - [ ] Use multiple axis
+
 ## Architecture
 
 ![Architecture](/Architecture.jpg)
@@ -39,3 +43,7 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 - ESP8266/Server -> The sketch for the ESP8266 which opens the wifi AP and listens for the websocket data
 - Server -> The node.js server which get the data from the serial port connected to the Access Point ESP8266
 - src -> The parcel webserver files
+
+## Screenshot
+Screenshot of the current version of the frontend
+![Screenshot](/screenshot.png)
