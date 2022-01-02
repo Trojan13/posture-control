@@ -42,7 +42,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     case WStype_CONNECTED:
     {
         Serial.println("Client connnected!");
-        Serial.println(webSocket.connectedClients()));
+        Serial.println(webSocket.connectedClients());
     }
     break;
 
@@ -86,7 +86,7 @@ void setup()
 
     delay(100);
 
-    webSocket.begin(local_IP,port_websocket,'/ws');
+    webSocket.begin();
     webSocket.onEvent(webSocketEvent);
 
     server.on("/", handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
