@@ -69,7 +69,7 @@ void setupWifi()
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting Websocket Server...");
-  ws_client.begin(websockets_adress, websockets_port,"/ws?client=" + client_name);
+  ws_client.begin(websockets_adress, websockets_port, strcat("/ws?client=" , client_name ));
   ws_client.onEvent(webSocketEvent);
   ws_client.enableHeartbeat(15000, 3000, 2);
   ws_client.setReconnectInterval(5000);
