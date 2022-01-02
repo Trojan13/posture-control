@@ -4,10 +4,10 @@
 #include <ArduinoJson.h>
 
 const char *client_name = "mpu_1";
-const char *ssid = "posture-control";                                    // The SSID (name) of the Wi-Fi network you want to connect to
-const char *password = "mpu6050!";                                       // The password of the Wi-Fi network
+const char *ssid = "posture-control";          // The SSID (name) of the Wi-Fi network you want to connect to
+const char *password = "mpu6050!";             // The password of the Wi-Fi network
 const char *websockets_adress = "192.168.4.1"; // ws adress
-const int websockets_port = 5000;                                        // ws port
+const int websockets_port = 5000;              // ws port
 WebSocketsClient ws_client;
 
 #define MPU6050_1 0x68
@@ -68,7 +68,7 @@ void setupWifi()
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting Websocket Server...");
-  ws_client.begin(websockets_adress, websockets_port,"/ws?client=mpu_1");
+  ws_client.begin(websockets_adress, websockets_port, "/ws?client=" + (const char *)client_name);
   ws_client.onEvent(webSocketEvent);
   ws_client.enableHeartbeat(15000, 3000, 2);
   ws_client.setReconnectInterval(5000);
@@ -137,20 +137,21 @@ void loop()
 
   DynamicJsonDocument doc(1024);
 
-  doc["ws_client"] = client_name;
-  doc["mpu_1"]["gyro"]["x"] = gyro_1.gyro.x;
-  doc["mpu_1"]["gyro"]["y"] = gyro_1.gyro.y;
-  doc["mpu_1"]["gyro"]["z"] = gyro_1.gyro.z;
-  doc["mpu_1"]["accel"]["x"] = accel_1.acceleration.x;
-  doc["mpu_1"]["accel"]["y"] = accel_1.acceleration.y;
-  doc["mpu_1"]["accel"]["z"] = accel_1.acceleration.z;
+  doc["type"] = "sensor-data";
+  doc["client"] = client_name;
+  doc["data"]["mpu_1"]["gyro"]["x"] = gyro_1.gyro.x;
+  doc["data"]["mpu_1"]["gyro"]["y"] = gyro_1.gyro.y;
+  doc["data"]["mpu_1"]["gyro"]["z"] = gyro_1.gyro.z;
+  doc["data"]["mpu_1"]["accel"]["x"] = accel_1.acceleration.x;
+  doc["data"]["mpu_1"]["accel"]["y"] = accel_1.acceleration.y;
+  doc["data"]["mpu_1"]["accel"]["z"] = accel_1.acceleration.z;
 
-  doc["mpu_2"]["gyro"]["x"] = gyro_2.gyro.x;
-  doc["mpu_2"]["gyro"]["y"] = gyro_2.gyro.y;
-  doc["mpu_2"]["gyro"]["z"] = gyro_2.gyro.z;
-  doc["mpu_2"]["accel"]["x"] = accel_2.acceleration.x;
-  doc["mpu_2"]["accel"]["y"] = accel_2.acceleration.y;
-  doc["mpu_2"]["accel"]["z"] = accel_2.acceleration.z;
+  doc["data"]["mpu_2"]["gyro"]["x"] = gyro_2.gyro.x;
+  doc["data"]["mpu_2"]["gyro"]["y"] = gyro_2.gyro.y;
+  doc["data"]["mpu_2"]["gyro"]["z"] = gyro_2.gyro.z;
+  doc["data"]["mpu_2"]["accel"]["x"] = accel_2.acceleration.x;
+  doc["data"]["mpu_2"]["accel"]["y"] = accel_2.acceleration.y;
+  doc["data"]["mpu_2"]["accel"]["z"] = accel_2.acceleration.z;
 
   String output;
   serializeJson(doc, output);

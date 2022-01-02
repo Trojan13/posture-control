@@ -4,11 +4,7 @@ const WebSocket = require('ws');
 const readLineParser = new SerialPort.parsers.Readline();
 const wss = new WebSocket.Server({ port: 8085 });
 let wssStatus = 0;
-let clientsConnected = {
-  MPU_1: false,
-  MPU_2: false,
-  FSR: false,
-};
+let clientStatus = {};
 let wsHandle = null;
 let sensorDataObject = {
   angle1: 0,
@@ -41,26 +37,35 @@ readLineParser.on('data', (data) => {
   if (wssStatus === 1 && wsHandle) {
     try {
       const comPortdataObject = JSON.parse(data);
-      if (comPortdataObject.ws_client === 'client_3') {
-        sensorDataObject.pressure1 = comPortdataObject.fsr_1;
-        sensorDataObject.pressure2 = comPortdataObject.fsr_2;
+      if (comPortdataObject.type === "sensor-data") {
+        if (comPortdataObject.client === 'fsr') {
+          sensorDataObject.pressure1 = comPortdataObject.data.fsr_1;
+          sensorDataObject.pressure2 = comPortdataObject.data.fsr_2;
+        }
+        if (comPortdataObject.client === 'mpu_1') {
+          sensorDataObject.angle1 = comPortdataObject.data.mpu_1.accel.y;
+          sensorDataObject.angle2 = comPortdataObject.data.mpu_2.accel.y;
+        }
+        if (comPortdataObject.client === 'mpu_2') {
+          sensorDataObject.angle3 = comPortdataObject.data.mpu_1.accel.y;
+          sensorDataObject.angle4 = comPortdataObject.data.mpu_2.accel.y;
+        }
+        webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
+        console.log(sensorDataObject);
+      } else if (comPortdataObject.type === "status") {
+        const clientName = comPortdataObject.client.split("\ws?client=");
+        if (Array.isArray(clientName)) {
+          clientStatus[clientName[1]] = { ip: comPortdataObject.data.ip, num: comPortdataObject.num, status: comPortdataObject.data.status };
+          webSocketSendData(wsHandle, clientStatus, 'status');
+        }
       }
-      if (comPortdataObject.ws_client === 'client_1') {
-        sensorDataObject.angle1 = comPortdataObject.mpu_1.accel.y;
-        sensorDataObject.angle2 = comPortdataObject.mpu_2.accel.y;
-      }
-      if (comPortdataObject.ws_client === 'client_2') {
-        sensorDataObject.angle3 = comPortdataObject.mpu_1.accel.y;
-        sensorDataObject.angle4 = comPortdataObject.mpu_2.accel.y;
-      }
-      webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
-      console.log(sensorDataObject);
     } catch (e) {
       console.log('ReadLineParserError: ', e);
       console.log('ReadLineParser:', data);
     }
   }
 });
+
 
 
 function webSocketSendData(handle, data, type) {

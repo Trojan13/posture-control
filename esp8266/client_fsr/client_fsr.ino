@@ -2,7 +2,7 @@
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 
-const char *client_name = "client_3";
+const char *client_name = "fsr";
 const char *ssid = "posture-control";          // The SSID (name) of the Wi-Fi network you want to connect to
 const char *password = "mpu6050!";             // The password of the Wi-Fi network
 const char *websockets_adress = "192.168.4.1"; // ws adress
@@ -69,7 +69,7 @@ void setupWifi()
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting Websocket Server...");
-  ws_client.begin(websockets_adress, websockets_port);
+  ws_client.begin(websockets_adress, websockets_port,"/ws?client=" + client_name);
   ws_client.onEvent(webSocketEvent);
   ws_client.enableHeartbeat(15000, 3000, 2);
   ws_client.setReconnectInterval(5000);
@@ -110,14 +110,15 @@ void loop()
 
   DynamicJsonDocument doc(1024);
 
-  doc["ws_client"] = client_name;
+  doc["type"] = "sensor-data";
+  doc["client"] = client_name;
 
   fsr1Read = analogReadOnDigital(1);
   delay(100);
   fsr2Read = analogReadOnDigital(2);
   delay(100);
-  doc["fsr_1"] = fsr1Read;
-  doc["fsr_2"] = fsr2Read;
+  doc["data"]["fsr_1"] = fsr1Read;
+  doc["data"]["fsr_2"] = fsr2Read;
 
   String output;
   serializeJson(doc, output);

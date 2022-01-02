@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+#include <ArduinoJson.h>
 
 const char *wifi_password = "mpu6050!";
 const char *wifi_ssid = "posture-control";
@@ -34,82 +35,96 @@ ESP8266WebServer server(port_webserver);
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
-    switch (type)
-    {
+  switch (type)
+  {
 
-    case WStype_DISCONNECTED:
-        Serial.println("Client disconnnected!" + num);
-        break;
+  case WStype_DISCONNECTED:
+    IPAddress ip = webSocket.remoteIP(num);
+    DynamicJsonDocument doc(1024);
+    doc["type"] = "status";
+    doc["client"] = (const char *)payload;
+    doc["data"]["status"] = "disconnected";
+    doc["data"]["ip"] = ip;
+    doc["data"]["num"] = num;
+    String output;
+    serializeJson(doc, output);
+    Serial.println(output);
+    break;
 
-    case WStype_CONNECTED:
-    {
-      Serial.println("Connected");
-        IPAddress ip = webSocket.remoteIP(num);
-        Serial.println(ip);
-        Serial.println(num);
-        Serial.println((const char *)payload);
-    }
-        break;
+  case WStype_CONNECTED:
+  {
+    IPAddress ip = webSocket.remoteIP(num);
+    DynamicJsonDocument doc(1024);
+    doc["type"] = "status";
+    doc["client"] = (const char *)payload;
+    doc["data"]["status"] = "connected";
+    doc["data"]["ip"] = ip;
+    doc["data"]["num"] = num;
+    String output;
+    serializeJson(doc, output);
+    Serial.println(output);
+  }
+  break;
 
-    case WStype_TEXT:
-        Serial.println((const char *)payload);
-        break;
+  case WStype_TEXT:
+    Serial.println((const char *)payload);
+    break;
 
-    case WStype_BIN:
-        Serial.printf("[%u] get binary length: %u\n", num, length);
-        hexdump(payload, length);
-        break;
-    }
-    }
+  case WStype_BIN:
+    Serial.printf("[%u] get binary length: %u\n", num, length);
+    hexdump(payload, length);
+    break;
+  }
+}
 
-    void handleNotFound()
-    {
-        server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
-    }
+void handleNotFound()
+{
+  server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
+}
 
-    void handleRoot()
-    {
-        server.sendHeader("Content-Security-Policy", "script-src;");
-        server.send(200, "text/html", INDEX_HTML);
-    }
+void handleRoot()
+{
+  server.sendHeader("Content-Security-Policy", "script-src;");
+  server.send(200, "text/html", INDEX_HTML);
+}
 
-    void setup()
-    {
+void setup()
+{
 
-        Serial.begin(115200);
-        Serial.flush();
-        Serial.println();
-        WiFi.mode(WIFI_AP);
-        Serial.print("Setting soft-AP configuration ... ");
-        Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+  Serial.begin(115200);
+  Serial.flush();
+  Serial.println();
+  WiFi.mode(WIFI_AP);
+  Serial.print("Setting soft-AP configuration ... ");
+  Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
 
-        Serial.print("Setting soft-AP ... ");
-        Serial.println(WiFi.softAP(wifi_ssid, wifi_password, wifi_channel, wifi_hidden, 4) ? "Ready" : "Failed!");
+  Serial.print("Setting soft-AP ... ");
+  Serial.println(WiFi.softAP(wifi_ssid, wifi_password, wifi_channel, wifi_hidden, 4) ? "Ready" : "Failed!");
 
-        Serial.print("Soft-AP IP address = ");
-        Serial.println(WiFi.softAPIP());
+  Serial.print("Soft-AP IP address = ");
+  Serial.println(WiFi.softAPIP());
 
-        delay(100);
+  delay(100);
 
-        if(MDNS.begin("esp8266")){
-          Serial.println("MDNS initialized...");
-        }
+  if (MDNS.begin("esp8266"))
+  {
+    Serial.println("MDNS initialized...");
+  }
 
-        webSocket.begin();
-        webSocket.onEvent(webSocketEvent);
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
 
-      
-        server.on("/", handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
-        server.onNotFound(handleNotFound); // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
-        
-        server.begin();
+  server.on("/", handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
+  server.onNotFound(handleNotFound); // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
 
-        MDNS.addService("http","tcp",port_webserver);
-        MDNS.addService("ws","tcp",port_websocket);
-    }
+  server.begin();
 
-    void loop()
-    {
-        server.handleClient();
-        webSocket.loop();
-    }
+  MDNS.addService("http", "tcp", port_webserver);
+  MDNS.addService("ws", "tcp", port_websocket);
+}
+
+void loop()
+{
+  server.handleClient();
+  webSocket.loop();
+}

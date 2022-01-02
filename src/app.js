@@ -80,14 +80,14 @@ function draw(wsAngles = null, wsPressure = null) {
 }
 function handleWsMessage(msg) {
     const parsedMessage = JSON.parse(msg.data);
-    const statusElement = document.getElementById('statusText').innerHTML;
+    const statusElement = document.getElementById('statusText');
     const msgTime = new Date(parsedMessage.date).toLocaleTimeString();
     const msgData = parsedMessage.data;
     const msgType = parsedMessage.type;
 
     switch (msgType) {
         case 'status':
-            
+            statusElement.innerHTML = msgData;
             break;
         case 'sensor-data':
             draw([msgData.angle1, msgData.angle2, msgData.angle3, msgData.angle4], [msgData.pressure1, msgData.pressure2]);
