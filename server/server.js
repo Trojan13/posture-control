@@ -53,7 +53,7 @@ readLineParser.on('data', (data) => {
         webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
       } else if (comPortdataObject.type === "status") {
         const clientName = comPortdataObject.data.client ? comPortdataObject.data.client.split("\ws?client=")[1] : '-';
-        clientStatus[comPortdataObject.clientId] = { ip: comPortdataObject.data.ip, num: comPortdataObject.num, status: comPortdataObject.data.status, name: clientName };
+        clientStatus[comPortdataObject.clientId] = { ip: comPortdataObject.data.ip, status: comPortdataObject.data.status, name: clientName };
         webSocketSendData(wsHandle, clientStatus, 'status');
         console.log(clientStatus);
 
