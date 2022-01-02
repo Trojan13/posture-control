@@ -20,6 +20,9 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 - [x] Test with two clients
 - [x] Test with three clients
 - [x] Make server.ino work with webserver
+- [x] Add status display for clients
+- [ ] Request status on boot for clients
+- [ ] Add function to send data to clients
 - [ ] Server.js should process data further
 - [ ] Calibrate MPU6050 Sensors
 - [ ] Calculate right angles from mpu data
@@ -43,4 +46,4 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 
 ## Screenshot
 Screenshot of the current version of the frontend
-![Screenshot](/Screenshot.png)
+![Screenshot](/screenshot.png)
