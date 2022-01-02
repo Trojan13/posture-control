@@ -41,10 +41,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 
     case WStype_CONNECTED:
     {
-        Serial.println("Client connnected!");
-        Serial.println(webSocket.connectedClients());
-    }
-    break;
+        IPAddress ip = webSocket.remoteIP(num);
+        Serial.println("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+        break;
 
     case WStype_TEXT:
         Serial.println((const char *)payload);
@@ -55,48 +54,48 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
         hexdump(payload, length);
         break;
     }
-}
+    }
 
-void handleNotFound()
-{
-    server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
-}
+    void handleNotFound()
+    {
+        server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
+    }
 
-void handleRoot()
-{
-    server.sendHeader("Content-Security-Policy", "script-src;");
-    server.send(200, "text/html", INDEX_HTML);
-}
+    void handleRoot()
+    {
+        server.sendHeader("Content-Security-Policy", "script-src;");
+        server.send(200, "text/html", INDEX_HTML);
+    }
 
-void setup()
-{
+    void setup()
+    {
 
-    Serial.begin(115200);
-    Serial.flush();
-    Serial.println();
-    WiFi.mode(WIFI_AP);
-    Serial.print("Setting soft-AP configuration ... ");
-    Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+        Serial.begin(115200);
+        Serial.flush();
+        Serial.println();
+        WiFi.mode(WIFI_AP);
+        Serial.print("Setting soft-AP configuration ... ");
+        Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
 
-    Serial.print("Setting soft-AP ... ");
-    Serial.println(WiFi.softAP(wifi_ssid, wifi_password, wifi_channel, wifi_hidden, 4) ? "Ready" : "Failed!");
+        Serial.print("Setting soft-AP ... ");
+        Serial.println(WiFi.softAP(wifi_ssid, wifi_password, wifi_channel, wifi_hidden, 4) ? "Ready" : "Failed!");
 
-    Serial.print("Soft-AP IP address = ");
-    Serial.println(WiFi.softAPIP());
+        Serial.print("Soft-AP IP address = ");
+        Serial.println(WiFi.softAPIP());
 
-    delay(100);
+        delay(100);
 
-    webSocket.begin();
-    webSocket.onEvent(webSocketEvent);
+        webSocket.begin();
+        webSocket.onEvent(webSocketEvent);
 
-    server.on("/", handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
-    server.onNotFound(handleNotFound); // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
+        server.on("/", handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
+        server.onNotFound(handleNotFound); // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
 
-    server.begin();
-}
+        server.begin();
+    }
 
-void loop()
-{
-    server.handleClient();
-    webSocket.loop();
-}
+    void loop()
+    {
+        server.handleClient();
+        webSocket.loop();
+    }
