@@ -51,12 +51,13 @@ readLineParser.on('data', (data) => {
           sensorDataObject.angle4 = comPortdataObject.data.mpu_2.accel.y;
         }
         webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
-        console.log(sensorDataObject);
       } else if (comPortdataObject.type === "status") {
         const clientName = comPortdataObject.client.split("\ws?client=");
         if (Array.isArray(clientName)) {
           clientStatus[clientName[1]] = { ip: comPortdataObject.data.ip, num: comPortdataObject.num, status: comPortdataObject.data.status };
           webSocketSendData(wsHandle, clientStatus, 'status');
+        console.log(clientStatus);
+
         }
       }
     } catch (e) {

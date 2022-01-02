@@ -39,16 +39,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
   {
 
   case WStype_DISCONNECTED:
+  {
     IPAddress ip = webSocket.remoteIP(num);
     DynamicJsonDocument doc(1024);
     doc["type"] = "status";
-    doc["client"] = (const char *)payload;
+    doc["clientId"] = num;
+    doc["data"]["client"] = (const char *)payload;
     doc["data"]["status"] = "disconnected";
     doc["data"]["ip"] = ip;
-    doc["data"]["num"] = num;
     String output;
     serializeJson(doc, output);
     Serial.println(output);
+  }
     break;
 
   case WStype_CONNECTED:
@@ -56,10 +58,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     IPAddress ip = webSocket.remoteIP(num);
     DynamicJsonDocument doc(1024);
     doc["type"] = "status";
-    doc["client"] = (const char *)payload;
+    doc["clientId"] = num;
+    doc["data"]["client"] = (const char *)payload;
     doc["data"]["status"] = "connected";
     doc["data"]["ip"] = ip;
-    doc["data"]["num"] = num;
     String output;
     serializeJson(doc, output);
     Serial.println(output);
@@ -113,7 +115,7 @@ void setup()
 
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
-
+  webSocket.enableHeartbeat(15000, 3000, 2);
   server.on("/", handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
   server.onNotFound(handleNotFound); // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
 
