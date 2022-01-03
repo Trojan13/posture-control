@@ -1,27 +1,79 @@
 <!doctype html>
 <html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <script type="module" src="app.js"></script>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js" integrity="sha256-XF29CBwU1MWLaGEnsELogU6Y6rcc5nCkhhx89nFMIDQ=" crossorigin="anonymous"></script>
+      <style>
+         .bg-black-alt  {
+         background:#191919;
+         }
+         .text-black-alt  {
+         color:#191919;
+         }
+         .border-black-alt {
+         border-color: #191919;
+         }
+      </style>
+      <link rel="stylesheet" href="style.css">
+      <script type="text/javascript">
+         function onSliderInput(e, btn) {
+           return true;
+         }
+         window.onSliderInput = onSliderInput;
+      </script>
+      <title>Posture Control</title>
+   </head>
+   <body class="bg-black-alt font-sans leading-normal tracking-normal">
 
-<head>
-  <meta charset="utf-8" />
-  <script type="module" src="app.js"></script>
-  <script type="text/javascript">
-    function onSliderInput(e, btn) {
-      return true;
-    }
-    window.onSliderInput = onSliderInput;
-  </script>
-  <title>Posture Control</title>
-</head>
+      <nav id="header" class="bg-gray-800 fixed w-full z-10 top-0 shadow">
+         <div class="w-full container mx-auto flex flex-wrap items-center mt-0 pt-3 pb-3 md:pb-0">
+            <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-800 z-20" id="nav-content">
+               <ul class="list-reset lg:flex flex-1 items-center px-4 md:px-0">
+                  <li class="mr-6 my-2 md:my-0">
+                     <a href="#" class="block py-1 md:py-3 pl-1 align-middle text-blue-400 no-underline hover:text-gray-100 border-b-2 border-blue-400 hover:border-blue-400">
+                     <i class="fas fa-home fa-fw mr-3 text-blue-400"></i><span class="pb-1 md:pb-0 text-sm">Posture Control</span>
+                     </a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </nav>
+      <!--Container-->
+      <div class="container w-full mx-auto pt-10">
+      <div class="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
+         <div class="flex flex-row flex-wrap flex-grow mt-2">
+            <div class="w-full md:w-1/2 p-3">
+               <!--Graph Card-->
+               <div class="bg-gray-800 border border-gray-600 rounded shadow">
+                  <div class="border-b border-gray-600 p-3">
+                     <h5 class="font-bold uppercase text-gray-600">Sensoren</h5>
+                  </div>
+                  <div class="p-5">
+                     <canvas id="canvas" width="400" height="400"></canvas>
 
-<body>
-  <h1>Posture Control</h1>
-  <div>Status:</div><div id="statusText">0</div>
-  <br />
-  <br />
-  <canvas id="canvas" width="600" height="400"></canvas>
-  <br />
-  <br />
-  <button onclick="onSliderInput()">Calibrate</button>
-</body>
-
+                    </div>
+               </div>
+               <!--/Graph Card-->
+            </div>
+            <div class="w-full md:w-1/2 p-3">
+               <!--Graph Card-->
+               <div class="bg-gray-2s00 border border-gray-600 rounded shadow">
+                  <div class="border-b border-gray-600 p-3">
+                     <h5 class="font-bold uppercase text-gray-600">Aktionen</h5>
+                  </div>
+                  <div class="p-5">
+                    <div class="">Status:</div>
+                    <div id="statusText">0</div>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="onSliderInput()">Calibrate</button>
+                     <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
+                  </div>
+               </div>
+               <!--/Graph Card-->
+            </div>
+         </div>
+      </div>
+   </body>
 </html>
