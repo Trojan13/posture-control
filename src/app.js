@@ -1,7 +1,6 @@
 if (module.hot) {
     module.hot.accept();
 }
-
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const lines = ['red', 'yellow', 'green', 'blue'];
