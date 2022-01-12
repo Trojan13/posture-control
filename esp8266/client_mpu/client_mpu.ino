@@ -13,6 +13,18 @@ WebSocketsClient ws_client;
 #define MPU6050_1 0x68
 #define MPU6050_2 0x69
 
+mpu_1_acc_err_x = 0.45;
+mpu_1_acc_err_y = -0.67;
+mpu_1_gyro_err_x = 500.04;
+mpu_1_gyro_err_y = 0.51;
+mpu_1_gyro_err_z = 499.45;
+
+mpu_2_acc_err_x = 0.07;
+mpu_2_acc_err_y = -86.15;
+mpu_2_gyro_err_x = 498.95;
+mpu_2_gyro_err_y = 0.86;
+mpu_2_gyro_err_z = 499.74;
+
 float elapsedTime, currentTime, previousTime;
 float acc_1_angle_x, acc_1_angle_y, gyro_1_angle_x, gyro_1_angle_y, gyro_1_angle_z;
 float acc_2_angle_x, acc_2_angle_y, gyro_2_angle_x, gyro_2_angle_y, gyro_2_angle_z;
@@ -150,25 +162,24 @@ void loop()
   mpu_accel_1->getEvent(&accel_1);
   mpu_accel_2->getEvent(&accel_2);
 
-  acc_1_angle_x = (atan(accel_1.acceleration.y / sqrt(pow(accel_1.acceleration.x, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
-  acc_1_angle_y = (atan(-1 * accel_1.acceleration.x / sqrt(pow(accel_1.acceleration.y, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
-  acc_2_angle_x = (atan(accel_2.acceleration.y / sqrt(pow(accel_2.acceleration.x, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
-  acc_2_angle_y = (atan(-1 * accel_2.acceleration.x / sqrt(pow(accel_2.acceleration.y, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
+  acc_1_angle_x = (atan(accel_1.acceleration.y / sqrt(pow(accel_1.acceleration.x, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI) - mpu_1_acc_err_x;
+  acc_1_angle_y = (atan(-1 * accel_1.acceleration.x / sqrt(pow(accel_1.acceleration.y, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI) - mpu_1_acc_err_y;
+  acc_2_angle_x = (atan(accel_2.acceleration.y / sqrt(pow(accel_2.acceleration.x, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI) - mpu_2_acc_err_x;
+  acc_2_angle_y = (atan(-1 * accel_2.acceleration.x / sqrt(pow(accel_2.acceleration.y, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI) - mpu_2_acc_err_y;
 
   previousTime = currentTime;                        // Previous time is stored before the actual time read
   currentTime = millis();                            // Current time actual time read
   elapsedTime = (currentTime - previousTime) / 1000; // Divide by 1000 to get seconds
 
-  gyro_1_angle_x = gyro_1_angle_x + gyro_1.gyro.x * elapsedTime; // deg/s * s = deg
-  gyro_1_angle_y = gyro_1_angle_y + gyro_1.gyro.y * elapsedTime;
-
-  yaw_1 = yaw_1 + gyro_1.gyro.z * elapsedTime;
-  yaw_2 = yaw_2 + gyro_2.gyro.z * elapsedTime;
-
-  // Complementary filter - combine acceleromter and gyro angle values
+  gyro_1_angle_x = gyro_1_angle_x + (gyro_1.gyro.x - mpu_1_gyro_err_x) * elapsedTime; // deg/s * s = deg
+  gyro_1_angle_y = gyro_1_angle_y + (gyro_1.gyro.y - mpu_1_gyro_err_y) * elapsedTime;
+  yaw_1 = yaw_1 + (gyro_1.gyro.z - mpu_1_gyro_err_z) * elapsedTime;
   roll_1 = 0.98 * gyro_1_angle_x + 0.02 * acc_1_angle_x;
   pitch_1 = 0.98 * gyro_1_angle_y + 0.02 * acc_1_angle_y;
 
+  gyro_2_angle_x = gyro_2_angle_x + (gyro_2.gyro.x - mpu_2_gyro_err_x) * elapsedTime; // deg/s * s = deg
+  gyro_2_angle_y = gyro_2_angle_y + (gyro_2.gyro.y - mpu_2_gyro_err_y) * elapsedTime;
+  yaw_2 = yaw_2 + (gyro_2.gyro.z - mpu_2_gyro_err_z) * elapsedTime;
   roll_2 = 0.98 * gyro_2_angle_x + 0.02 * acc_2_angle_x;
   pitch_2 = 0.98 * gyro_2_angle_y + 0.02 * acc_2_angle_y;
 
