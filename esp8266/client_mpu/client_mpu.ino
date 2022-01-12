@@ -111,14 +111,14 @@ void setupSensors()
   }
   Serial.println("Found MPU 2 chip");
 
-  mpu_1.setAccelerometerRange(MPU6050_RANGE_8_G);
-  mpu_2.setAccelerometerRange(MPU6050_RANGE_8_G);
+  mpu_1.setAccelerometerRange(MPU6050_RANGE_2_G);
+  mpu_2.setAccelerometerRange(MPU6050_RANGE_2_G);
 
-  mpu_1.setGyroRange(MPU6050_RANGE_500_DEG);
-  mpu_2.setGyroRange(MPU6050_RANGE_500_DEG);
+  mpu_1.setGyroRange(MPU6050_RANGE_250_DEG);
+  mpu_2.setGyroRange(MPU6050_RANGE_250_DEG);
 
-  mpu_1.setFilterBandwidth(MPU6050_BAND_21_HZ);
-  mpu_2.setFilterBandwidth(MPU6050_BAND_21_HZ);
+  mpu_1.setFilterBandwidth(MPU6050_BAND_44_HZ);
+  mpu_2.setFilterBandwidth(MPU6050_BAND_44_HZ);
 
   mpu_gyro_1 = mpu_1.getGyroSensor();
   mpu_gyro_1->printSensorDetails();
@@ -166,11 +166,11 @@ void loop()
   yaw_2 = yaw_2 + gyro_2.gyro.z * elapsedTime;
 
   // Complementary filter - combine acceleromter and gyro angle values
-  roll_1 = 0.96 * gyro_1_angle_x + 0.04 * acc_1_angle_x;
-  pitch_1 = 0.96 * gyro_1_angle_y + 0.04 * acc_1_angle_y;
+  roll_1 = 0.98 * gyro_1_angle_x + 0.02 * acc_1_angle_x;
+  pitch_1 = 0.98 * gyro_1_angle_y + 0.02 * acc_1_angle_y;
 
-  roll_2 = 0.96 * gyro_2_angle_x + 0.04 * acc_2_angle_x;
-  pitch_2 = 0.96 * gyro_2_angle_y + 0.04 * acc_2_angle_y;
+  roll_2 = 0.98 * gyro_2_angle_x + 0.02 * acc_2_angle_x;
+  pitch_2 = 0.98 * gyro_2_angle_y + 0.02 * acc_2_angle_y;
 
   DynamicJsonDocument doc(1024);
 
