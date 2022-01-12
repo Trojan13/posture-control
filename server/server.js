@@ -16,6 +16,15 @@ let sensorDataObject = {
   pressure1: 0,
   pressure2: 0,
 };
+let sensorDataCalibrateObject = {
+  angle1: 270,
+  angle2: 270,
+  angle3: 270,
+  angle4: 270,
+  pressure1: 0,
+  pressure2: 0,
+};
+
 
 SerialPort.list().then((ports) => {
   ports.forEach(function (port) {
@@ -41,16 +50,16 @@ readLineParser.on('data', (data) => {
       const comPortdataObject = JSON.parse(data);
       if (comPortdataObject.type === "sensor-data") {
         if (comPortdataObject.client === 'fsr') {
-          sensorDataObject.pressure1 = comPortdataObject.data.fsr_1;
-          sensorDataObject.pressure2 = comPortdataObject.data.fsr_2;
+          sensorDataObject.pressure1 = comPortdataObject.data.fsr_1 + sensorDataCalibrateObject.pressure1;
+          sensorDataObject.pressure2 = comPortdataObject.data.fsr_2 + sensorDataCalibrateObject.pressure2;
         }
         if (comPortdataObject.client === 'mpu_1') {
-          sensorDataObject.angle1 = comPortdataObject.data.mpu_1.accel.y;
-          sensorDataObject.angle2 = comPortdataObject.data.mpu_2.accel.y;
+          sensorDataObject.angle1 = comPortdataObject.data.mpu_1.accel.y + sensorDataCalibrateObject.angle1;
+          sensorDataObject.angle2 = comPortdataObject.data.mpu_2.accel.y + sensorDataCalibrateObject.angle2;
         }
         if (comPortdataObject.client === 'mpu_2') {
-          sensorDataObject.angle3 = comPortdataObject.data.mpu_1.accel.y;
-          sensorDataObject.angle4 = comPortdataObject.data.mpu_2.accel.y;
+          sensorDataObject.angle3 = comPortdataObject.data.mpu_1.accel.y + sensorDataCalibrateObject.angle3;
+          sensorDataObject.angle4 = comPortdataObject.data.mpu_2.accel.y + sensorDataCalibrateObject.angle4;
         }
         webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
       } else if (comPortdataObject.type === "status") {
@@ -84,12 +93,16 @@ wss.on('connection', ws => {
   wssStatus = 1;
   wsHandle = ws;
   ws.on('message', message => {
-    console.log(JSON.stringify(message));
-    try {
-      port.write(message);
-      console.log("Written command to serial");
-    } catch (e) {
-      console.log(e);
+    const obj = JSON.parse(message);
+    if (obj.type === 'command' && obj.command === 'calibrate') {
+
+    } else {
+      try {
+        port.write(message);
+        console.log("Written command to serial");
+      } catch (e) {
+        console.log(e);
+      }
     }
   })
 });

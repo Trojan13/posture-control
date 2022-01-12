@@ -88,7 +88,7 @@ function draw(wsAngles = null, wsPressure = null) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let prev = start;
     for (let i = 0; i < lines.length; i++) {
-        const angleValue = wsAngles ? wsAngles[i] : 300;
+        const angleValue = wsAngles ? wsAngles[i] : 270;
         const angle = (Math.PI * angleValue) / 180;
         ctx.beginPath();
         ctx.moveTo(...prev);
