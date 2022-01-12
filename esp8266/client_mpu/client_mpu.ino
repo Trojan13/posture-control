@@ -13,17 +13,17 @@ WebSocketsClient ws_client;
 #define MPU6050_1 0x68
 #define MPU6050_2 0x69
 
-mpu_1_acc_err_x = 0.45;
-mpu_1_acc_err_y = -0.67;
-mpu_1_gyro_err_x = 500.04;
-mpu_1_gyro_err_y = 0.51;
-mpu_1_gyro_err_z = 499.45;
+float mpu_1_acc_err_x = 0.45;
+float mpu_1_acc_err_y = -0.67;
+float mpu_1_gyro_err_x = 500.04;
+float mpu_1_gyro_err_y = 0.51;
+float mpu_1_gyro_err_z = 499.45;
 
-mpu_2_acc_err_x = 0.07;
-mpu_2_acc_err_y = -86.15;
-mpu_2_gyro_err_x = 498.95;
-mpu_2_gyro_err_y = 0.86;
-mpu_2_gyro_err_z = 499.74;
+float mpu_2_acc_err_x = 0.07;
+float mpu_2_acc_err_y = -86.15;
+float mpu_2_gyro_err_x = 498.95;
+float mpu_2_gyro_err_y = 0.86;
+float mpu_2_gyro_err_z = 499.76;
 
 float elapsedTime, currentTime, previousTime;
 float acc_1_angle_x, acc_1_angle_y, gyro_1_angle_x, gyro_1_angle_y, gyro_1_angle_z;

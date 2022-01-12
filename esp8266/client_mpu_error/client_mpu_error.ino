@@ -5,7 +5,7 @@
 
 #include <Wire.h>
 
-const int MPU = 0x68; // MPU6050 I2C address
+const int MPU = 0x69; // MPU6050 I2C address
 float AccX, AccY, AccZ;
 float GyroX, GyroY, GyroZ;
 float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ;
