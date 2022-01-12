@@ -13,6 +13,12 @@ WebSocketsClient ws_client;
 #define MPU6050_1 0x68
 #define MPU6050_2 0x69
 
+float elapsedTime, currentTime, previousTime;
+float acc_1_angle_x, acc_1_angle_y, gyro_1_angle_x, gyro_1_angle_y, gyro_1_angle_z;
+float acc_2_angle_x, acc_2_angle_y, gyro_2_angle_x, gyro_2_angle_y, gyro_2_angle_z;
+float roll_1, pitch_1, yaw_1;
+float roll_2, pitch_2, yaw_2;
+
 Adafruit_MPU6050 mpu_1, mpu_2;
 Adafruit_Sensor *mpu_gyro_1, *mpu_gyro_2, *mpu_accel_1, *mpu_accel_2;
 bool sensorsSetup;
@@ -144,6 +150,28 @@ void loop()
   mpu_accel_1->getEvent(&accel_1);
   mpu_accel_2->getEvent(&accel_2);
 
+  acc_1_angle_x = (atan(accel_1.acceleration.y / sqrt(pow(accel_1.acceleration.x, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
+  acc_1_angle_y = (atan(-1 * accel_1.acceleration.x / sqrt(pow(accel_1.acceleration.y, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
+  acc_2_angle_x = (atan(accel_2.acceleration.y / sqrt(pow(accel_2.acceleration.x, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
+  acc_2_angle_y = (atan(-1 * accel_2.acceleration.x / sqrt(pow(accel_2.acceleration.y, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
+
+  previousTime = currentTime;                        // Previous time is stored before the actual time read
+  currentTime = millis();                            // Current time actual time read
+  elapsedTime = (currentTime - previousTime) / 1000; // Divide by 1000 to get seconds
+
+  gyro_1_angle_x = gyro_1_angle_x + gyro_1.gyro.x * elapsedTime; // deg/s * s = deg
+  gyro_1_angle_y = gyro_1_angle_y + gyro_1.gyro.y * elapsedTime;
+
+  yaw_1 = yaw_1 + gyro_1.gyro.z * elapsedTime;
+  yaw_2 = yaw_2 + gyro_2.gyro.z * elapsedTime;
+
+  // Complementary filter - combine acceleromter and gyro angle values
+  roll_1 = 0.96 * gyro_1_angle_x + 0.04 * acc_1_angle_x;
+  pitch_1 = 0.96 * gyro_1_angle_y + 0.04 * acc_1_angle_y;
+
+  roll_2 = 0.96 * gyro_2_angle_x + 0.04 * acc_2_angle_x;
+  pitch_2 = 0.96 * gyro_2_angle_y + 0.04 * acc_2_angle_y;
+
   DynamicJsonDocument doc(1024);
 
   doc["type"] = "sensor-data";
@@ -154,6 +182,9 @@ void loop()
   doc["data"]["mpu_1"]["accel"]["x"] = accel_1.acceleration.x;
   doc["data"]["mpu_1"]["accel"]["y"] = accel_1.acceleration.y;
   doc["data"]["mpu_1"]["accel"]["z"] = accel_1.acceleration.z;
+  doc["data"]["mpu_1"]["roll"] = roll_1;
+  doc["data"]["mpu_1"]["pitch"] = pitch_1;
+  doc["data"]["mpu_1"]["yaw"] = yaw_1;
 
   doc["data"]["mpu_2"]["gyro"]["x"] = gyro_2.gyro.x;
   doc["data"]["mpu_2"]["gyro"]["y"] = gyro_2.gyro.y;
@@ -161,6 +192,9 @@ void loop()
   doc["data"]["mpu_2"]["accel"]["x"] = accel_2.acceleration.x;
   doc["data"]["mpu_2"]["accel"]["y"] = accel_2.acceleration.y;
   doc["data"]["mpu_2"]["accel"]["z"] = accel_2.acceleration.z;
+  doc["data"]["mpu_2"]["roll"] = roll_2;
+  doc["data"]["mpu_2"]["pitch"] = pitch_2;
+  doc["data"]["mpu_2"]["yaw"] = yaw_2;
 
   String output;
   serializeJson(doc, output);
