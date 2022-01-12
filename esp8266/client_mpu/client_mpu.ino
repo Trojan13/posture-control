@@ -68,7 +68,7 @@ void setupWifi()
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting Websocket Server...");
-  ws_client.begin(websockets_adress, websockets_port, strcat("/ws?client=" , client_name ));
+  ws_client.begin(websockets_adress, websockets_port, strcat("/ws?client=", client_name));
   ws_client.onEvent(webSocketEvent);
   ws_client.enableHeartbeat(15000, 3000, 2);
   ws_client.setReconnectInterval(5000);
@@ -104,6 +104,15 @@ void setupSensors()
     }
   }
   Serial.println("Found MPU 2 chip");
+
+  mpu_1.setAccelerometerRange(MPU6050_RANGE_8_G);
+  mpu_2.setAccelerometerRange(MPU6050_RANGE_8_G);
+
+  mpu_1.setGyroRange(MPU6050_RANGE_500_DEG);
+  mpu_2.setGyroRange(MPU6050_RANGE_500_DEG);
+
+  mpu_1.setFilterBandwidth(MPU6050_BAND_21_HZ);
+  mpu_2.setFilterBandwidth(MPU6050_BAND_21_HZ);
 
   mpu_gyro_1 = mpu_1.getGyroSensor();
   mpu_gyro_1->printSensorDetails();
