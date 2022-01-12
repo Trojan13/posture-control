@@ -17,14 +17,15 @@ let sensorDataObject = {
   pressure2: 0,
 };
 let sensorDataCalibrateObject = {
-  angle1: 270,
-  angle2: 270,
-  angle3: 270,
-  angle4: 270,
+  angle1: 0,
+  angle2: 0,
+  angle3: 0,
+  angle4: 0,
   pressure1: 0,
   pressure2: 0,
 };
-
+let isCalibrating;
+let calibrationDataArray = [];
 
 SerialPort.list().then((ports) => {
   ports.forEach(function (port) {
@@ -61,6 +62,7 @@ readLineParser.on('data', (data) => {
           sensorDataObject.angle3 = comPortdataObject.data.mpu_1.accel.y + sensorDataCalibrateObject.angle3;
           sensorDataObject.angle4 = comPortdataObject.data.mpu_2.accel.y + sensorDataCalibrateObject.angle4;
         }
+        if (isCalibrating) calibrateSensors(sensorDataObject);
         webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
       } else if (comPortdataObject.type === "status") {
         const clientName = comPortdataObject.data.client ? comPortdataObject.data.client.split("\ws?client=")[1] : '-';
@@ -78,7 +80,27 @@ readLineParser.on('data', (data) => {
   }
 });
 
+function calibrateSensors(sensorData) {
+  calibrationDataArray[0].push(sensorData.pressure1);
+  calibrationDataArray[1].push(sensorData.pressure2);
+  calibrationDataArray[2].push(sensorData.angle1);
+  calibrationDataArray[3].push(sensorData.angle2);
+  calibrationDataArray[4].push(sensorData.angle3);
+  calibrationDataArray[5].push(sensorData.angle4);
+}
 
+function stopCalibrating() {
+  const average = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+  sensorDataCalibrateObject = {
+    angle1: average(calibrationDataArray[2]) + 270,
+    angle2: average(calibrationDataArray[3]) + 270,
+    angle3: average(calibrationDataArray[4]) + 270,
+    angle4: average(calibrationDataArray[5]) + 270,
+    pressure1: average(calibrationDataArray[0]),
+    pressure2: average(calibrationDataArray[1]),
+  };
+  isCalibrating = false;
+}
 
 function webSocketSendData(handle, data, type) {
   handle.send(JSON.stringify({
@@ -95,7 +117,8 @@ wss.on('connection', ws => {
   ws.on('message', message => {
     const obj = JSON.parse(message);
     if (obj.type === 'command' && obj.command === 'calibrate') {
-
+      isCalibrating = true;
+      setTimeout(stopCalibrating(), 5000);
     } else {
       try {
         port.write(message);
