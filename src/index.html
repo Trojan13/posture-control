@@ -5,12 +5,6 @@
    <meta charset="utf-8" />
    <script type="module" src="app.js"></script>
    <link rel="stylesheet" href="style.css">
-   <script type="text/javascript">
-      function onSliderInput(e, btn) {
-         return true;
-      }
-      window.onSliderInput = onSliderInput;
-   </script>
    <title>Posture Control</title>
 </head>
 
@@ -44,13 +38,22 @@
                         <h5 class="font-bold uppercase text-gray-600">Aktionen</h5>
                      </div>
                      <div class="p-5">
-                        <div class="">Status:</div>
-                        <div id="statusText">0</div>
+                        <div class="">Client Status:</div>
+                        <div id="clientStatusText"></div>
+                        <div class="">Server Status:</div>
+                        <div id="statusText"></div>
+                        <div class="">Commands:</div>
+
                         <button
                            class="rounded-full nm-flat-gray-200 hover:nm-flat-gray-200-lg leading-5 mt-3 px-8 py-4 uppercase font-bold tracking-widest transition duration-200 ease-in-out transform hover:scale-110"
-                           onclick="onSliderInput()">
+                           id="calibrate-btn">
                            Calibrate
                         </button>
+                        <button
+                        class="rounded-full nm-flat-gray-200 hover:nm-flat-gray-200-lg leading-5 mt-3 px-8 py-4 uppercase font-bold tracking-widest transition duration-200 ease-in-out transform hover:scale-110"
+                        id="beep-btn">
+                         Beep
+                     </button>
                      </div>
                   </div>
                   <!--/Graph Card-->

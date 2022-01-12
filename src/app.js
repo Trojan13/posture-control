@@ -7,6 +7,11 @@ const ctx = canvas.getContext('2d');
 const lines = ['red', 'yellow', 'green', 'blue'];
 const start = [200, 400];
 const lineLength = 100;
+let clientStatus;
+let wsConnection;
+const clientStatusElement = document.getElementById('clientStatusText');
+document.getElementById('calibrate-btn').addEventListener("click", () => sendWSCommand("calibrate"));
+document.getElementById('beep-btn').addEventListener("click", () => sendWSCommand("beep"));
 
 let image = new Image();
 image.src = new URL(
@@ -21,6 +26,8 @@ function connect() {
     const connection = new WebSocket('ws://localhost:8085');
     connection.onopen = function () {
         console.log('Connected!');
+        wsConnection = connection;
+        setClientStatus('ws - connected');
         // subscribe to some channels
     };
     connection.onmessage = function (e) {
@@ -28,18 +35,40 @@ function connect() {
     };
 
     connection.onclose = function (e) {
+        setClientStatus('ws - closed');
+        wsConnection = null;
         console.log('Socket is closed. Reconnect will be attempted in 10 seconds.', e.reason);
         setTimeout(function () {
+            setClientStatus('ws - reconnecting');
             connect();
         }, 10000);
     };
 
     connection.onerror = function (err) {
         console.error('Socket encountered error: ', err.message, 'Closing socket');
+        setClientStatus('ws - closed on error');
         connection.close();
     };
 }
 
+function setClientStatus(status) {
+    clientStatus = status;
+    clientStatusElement.innerHTML = new Date().getTime() + ' - ' + status;
+}
+
+function sendWSCommand(cmd) {
+    if (clientStatus === 'ws - connected' && wsConnection) {
+        const cmd = {
+            type: 'command',
+            client: 'server',
+            target: 'client_1',
+            data: data
+        };
+        wsConnection.send(cmd);
+    } else {
+        setClientStatus('ws - command failed to send');
+    }
+}
 
 function drawCircle(ctx, pressure1 = 0, pressure2 = 0) {
     const radius1 = 5 + 30 / 200 * pressure1;
@@ -78,6 +107,7 @@ function draw(wsAngles = null, wsPressure = null) {
     drawCircle(ctx, wsPressure ? wsPressure[0] : 0, wsPressure ? wsPressure[1] : 0);
     drawFoot(ctx);
 }
+
 function handleWsMessage(msg) {
     const parsedMessage = JSON.parse(msg.data);
     const statusElement = document.getElementById('statusText');
@@ -99,6 +129,7 @@ function handleWsMessage(msg) {
             break;
     }
 }
+setClientStatus('ws - disconnected');
 
 draw();
 connect();
