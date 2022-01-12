@@ -16,6 +16,7 @@ let sensorDataObject = {
   pressure1: 0,
   pressure2: 0,
 };
+let calibrationFactor = 1.5;
 let sensorDataCalibrateObject = {
   angle1: 0,
   angle2: 0,
@@ -25,11 +26,11 @@ let sensorDataCalibrateObject = {
   pressure2: 0,
 };
 let isCalibrating;
-let calibrationDataArray = [];
+let calibrationDataArray = Array(6).fill(null).map(() => Array(0));
 
 SerialPort.list().then((ports) => {
   ports.forEach(function (port) {
-    console.log(port);
+   // console.log(port);
   });
 });
 let port = new SerialPort('COM6', {
@@ -42,7 +43,7 @@ port.on('open', () => {
 });
 
 port.on('error', (err) => {
-  console.log(err);
+ // console.log(err);
 });
 
 readLineParser.on('data', (data) => {
@@ -55,12 +56,12 @@ readLineParser.on('data', (data) => {
           sensorDataObject.pressure2 = comPortdataObject.data.fsr_2 + sensorDataCalibrateObject.pressure2;
         }
         if (comPortdataObject.client === 'mpu_1') {
-          sensorDataObject.angle1 = comPortdataObject.data.mpu_1.accel.y + sensorDataCalibrateObject.angle1;
-          sensorDataObject.angle2 = comPortdataObject.data.mpu_2.accel.y + sensorDataCalibrateObject.angle2;
+          sensorDataObject.angle1 = (comPortdataObject.data.mpu_1.accel.y + sensorDataCalibrateObject.angle1)*calibrationFactor;
+          sensorDataObject.angle2 = (comPortdataObject.data.mpu_2.accel.y + sensorDataCalibrateObject.angle2)*calibrationFactor;
         }
         if (comPortdataObject.client === 'mpu_2') {
-          sensorDataObject.angle3 = comPortdataObject.data.mpu_1.accel.y + sensorDataCalibrateObject.angle3;
-          sensorDataObject.angle4 = comPortdataObject.data.mpu_2.accel.y + sensorDataCalibrateObject.angle4;
+          sensorDataObject.angle3 = (comPortdataObject.data.mpu_1.accel.y + sensorDataCalibrateObject.angle3)*calibrationFactor;
+          sensorDataObject.angle4 = (comPortdataObject.data.mpu_2.accel.y + sensorDataCalibrateObject.angle4)*calibrationFactor;
         }
         if (isCalibrating) calibrateSensors(sensorDataObject);
         webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
@@ -74,8 +75,8 @@ readLineParser.on('data', (data) => {
         webSocketSendData(wsHandle, clientStatus, 'status');
       }
     } catch (e) {
-      console.log('ReadLineParserError: ', e);
-      console.log('ReadLineParser:', data);
+      // console.log('ReadLineParserError: ', e);
+      // console.log('ReadLineParser:', data);
     }
   }
 });
@@ -90,14 +91,16 @@ function calibrateSensors(sensorData) {
 }
 
 function stopCalibrating() {
+  console.log(calibrationDataArray);
+
   const average = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
   sensorDataCalibrateObject = {
     angle1: average(calibrationDataArray[2]) + 270,
     angle2: average(calibrationDataArray[3]) + 270,
     angle3: average(calibrationDataArray[4]) + 270,
     angle4: average(calibrationDataArray[5]) + 270,
-    pressure1: average(calibrationDataArray[0]),
-    pressure2: average(calibrationDataArray[1]),
+    pressure1: 0,
+    pressure2: 0,
   };
   isCalibrating = false;
 }
@@ -111,14 +114,15 @@ function webSocketSendData(handle, data, type) {
 }
 
 wss.on('connection', ws => {
-  console.log('WS Connected!', ws);
+  console.log('WS Connected!');
   wssStatus = 1;
   wsHandle = ws;
   ws.on('message', message => {
     const obj = JSON.parse(message);
-    if (obj.type === 'command' && obj.command === 'calibrate') {
+    console.log(obj);
+    if (obj.type === 'command' && obj.data === 'calibrate') {
       isCalibrating = true;
-      setTimeout(stopCalibrating(), 5000);
+      setTimeout(() => {stopCalibrating();}, 5000);
     } else {
       try {
         port.write(message);
