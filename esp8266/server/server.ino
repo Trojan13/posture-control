@@ -4,6 +4,8 @@
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 
+StaticJsonDocument<120> readDoc;
+
 const char *wifi_password = "mpu6050!";
 const char *wifi_ssid = "posture-control";
 
@@ -51,7 +53,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     serializeJson(doc, output);
     Serial.println(output);
   }
-    break;
+  break;
 
   case WStype_CONNECTED:
   {
@@ -124,9 +126,24 @@ void setup()
   MDNS.addService("http", "tcp", port_webserver);
   MDNS.addService("ws", "tcp", port_websocket);
 }
+void forwardSerialToWS()
+{
+  if (Serial.available() > 0)
+  {
+    delay(10);
+    String s = Serial.readStringUntil('#');
+
+    while (Serial.available() > 0)
+    {
+      Serial.read();
+    }
+    webSocket.broadcastTXT(s);
+  }
+}
 
 void loop()
 {
   server.handleClient();
   webSocket.loop();
+  forwardSerialToWS();
 }

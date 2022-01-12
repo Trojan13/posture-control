@@ -2,7 +2,9 @@ const SerialPort = require('serialport');
 const WebSocket = require('ws');
 
 const readLineParser = new SerialPort.parsers.Readline();
-const wss = new WebSocket.Server({ port: 8085 });
+const wss = new WebSocket.Server({
+  port: 8085
+});
 let wssStatus = 0;
 let clientStatus = {};
 let wsHandle = null;
@@ -53,10 +55,12 @@ readLineParser.on('data', (data) => {
         webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
       } else if (comPortdataObject.type === "status") {
         const clientName = comPortdataObject.data.client ? comPortdataObject.data.client.split("\ws?client=")[1] : '-';
-        clientStatus[comPortdataObject.clientId] = { ip: comPortdataObject.data.ip, status: comPortdataObject.data.status, name: clientName };
+        clientStatus[comPortdataObject.clientId] = {
+          ip: comPortdataObject.data.ip,
+          status: comPortdataObject.data.status,
+          name: clientName
+        };
         webSocketSendData(wsHandle, clientStatus, 'status');
-        console.log(clientStatus);
-
       }
     } catch (e) {
       console.log('ReadLineParserError: ', e);
@@ -68,7 +72,11 @@ readLineParser.on('data', (data) => {
 
 
 function webSocketSendData(handle, data, type) {
-  handle.send(JSON.stringify({ type: type, data: data, date: new Date() }));
+  handle.send(JSON.stringify({
+    type: type,
+    data: data,
+    date: new Date()
+  }));
 }
 
 wss.on('connection', ws => {
@@ -76,6 +84,12 @@ wss.on('connection', ws => {
   wssStatus = 1;
   wsHandle = ws;
   ws.on('message', message => {
-    console.log(`Received message => ${message}`)
+    console.log(JSON.stringify(message));
+    try {
+      port.write(message);
+      console.log("Written command to serial");
+    } catch (e) {
+      console.log(e);
+    }
   })
 });

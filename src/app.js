@@ -56,7 +56,7 @@ function setClientStatus(status) {
     clientStatusElement.innerHTML = new Date().getTime() + ' - ' + status;
 }
 
-function sendWSCommand(cmd) {
+function sendWSCommand(data) {
     if (clientStatus === 'ws - connected' && wsConnection) {
         const cmd = {
             type: 'command',
@@ -64,7 +64,7 @@ function sendWSCommand(cmd) {
             target: 'client_1',
             data: data
         };
-        wsConnection.send(cmd);
+        wsConnection.send(JSON.stringify(cmd));
     } else {
         setClientStatus('ws - command failed to send');
     }
