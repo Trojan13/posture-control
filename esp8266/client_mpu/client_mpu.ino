@@ -206,8 +206,8 @@ void loop()
   doc["data"]["mpu_2"]["accel"]["x"] = accel_2.acceleration.x;
   doc["data"]["mpu_2"]["accel"]["y"] = accel_2.acceleration.y;
   doc["data"]["mpu_2"]["accel"]["z"] = accel_2.acceleration.z;
-  doc["data"]["mpu_1"]["accel_2"]["x"] = (atan(accel_2.acceleration.y / sqrt(pow(accel_2.acceleration.x, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
-  doc["data"]["mpu_1"]["accel_2"]["y"] = (atan(-1 * accel_2.acceleration.x / sqrt(pow(accel_2.acceleration.y, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
+  doc["data"]["mpu_2"]["accel_2"]["x"] = (atan(accel_2.acceleration.y / sqrt(pow(accel_2.acceleration.x, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
+  doc["data"]["mpu_2"]["accel_2"]["y"] = (atan(-1 * accel_2.acceleration.x / sqrt(pow(accel_2.acceleration.y, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
   doc["data"]["mpu_2"]["roll"] = roll_2;
   doc["data"]["mpu_2"]["pitch"] = pitch_2;
   doc["data"]["mpu_2"]["yaw"] = yaw_2;
