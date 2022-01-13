@@ -56,14 +56,15 @@ readLineParser.on('data', (data) => {
           sensorDataObject.pressure2 = comPortdataObject.data.fsr_2 + sensorDataCalibrateObject.pressure2;
         }
         if (comPortdataObject.client === 'mpu_1') {
-          sensorDataObject.angle1 = (sensorDataCalibrateObject.angle1 * calibrationFactor) - comPortdataObject.data.mpu_1.roll;
-          sensorDataObject.angle2 = (sensorDataCalibrateObject.angle2 * calibrationFactor) - comPortdataObject.data.mpu_2.roll;
+          sensorDataObject.angle1 = comPortdataObject.data.mpu_1.pitch;
+          sensorDataObject.angle2 = comPortdataObject.data.mpu_2.pitch;
         }
         if (comPortdataObject.client === 'mpu_2') {
-          sensorDataObject.angle3 = (sensorDataCalibrateObject.angle3 * calibrationFactor) - comPortdataObject.data.mpu_1.roll;
-          sensorDataObject.angle4 = (sensorDataCalibrateObject.angle4 * calibrationFactor) - comPortdataObject.data.mpu_2.roll;
+          sensorDataObject.angle3 = comPortdataObject.data.mpu_1.pitch;
+          sensorDataObject.angle4 = comPortdataObject.data.mpu_2.pitch;
         }
         if (isCalibrating) calibrateSensors(sensorDataObject);
+        console.log(sensorDataObject)
         webSocketSendData(wsHandle, sensorDataObject, 'sensor-data');
       } else if (comPortdataObject.type === "status") {
         const clientName = comPortdataObject.data.client ? comPortdataObject.data.client.split("\ws?client=")[1] : '-';
