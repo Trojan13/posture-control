@@ -89,7 +89,7 @@ function draw(wsAngles = null, wsPressure = null) {
     let prev = start;
     for (let i = 0; i < lines.length; i++) {
         const angleValue = wsAngles ? wsAngles[i] : 270;
-        const angle = (Math.PI * angleValue) / 180;
+        const angle = angleValue;
         ctx.beginPath();
         ctx.moveTo(...prev);
         ctx.strokeStyle = lines[i];

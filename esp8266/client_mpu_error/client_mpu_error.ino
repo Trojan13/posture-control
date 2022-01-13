@@ -12,7 +12,7 @@ const int MPU_2 = 0x69; // 2. (AD0 High) MPU6050 I2C address
 
 void setup()
 {
-  Serial.begin(19200);
+  Serial.begin(115200);
 
   Serial.println("Starting Errortest for MPU_1: ");
   Serial.println("");
