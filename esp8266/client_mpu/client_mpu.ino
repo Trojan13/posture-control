@@ -20,7 +20,7 @@ float mpu_1_gyro_err_y = 0.51;
 float mpu_1_gyro_err_z = 0.45;
 
 float mpu_2_acc_err_x = 0.07;
-float mpu_2_acc_err_y = -86.15;
+float mpu_2_acc_err_y = -0.15;
 float mpu_2_gyro_err_x = 0.95;
 float mpu_2_gyro_err_y = 0.86;
 float mpu_2_gyro_err_z = 0.76;
@@ -193,6 +193,9 @@ void loop()
   doc["data"]["mpu_1"]["accel"]["x"] = accel_1.acceleration.x;
   doc["data"]["mpu_1"]["accel"]["y"] = accel_1.acceleration.y;
   doc["data"]["mpu_1"]["accel"]["z"] = accel_1.acceleration.z;
+  doc["data"]["mpu_1"]["accel_2"]["x"] = (atan(accel_1.acceleration.y / sqrt(pow(accel_1.acceleration.x, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
+  doc["data"]["mpu_1"]["accel_2"]["y"] = (atan(-1 * accel_1.acceleration.x / sqrt(pow(accel_1.acceleration.y, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
+  doc["data"]["mpu_1"]["accel_2"]["z"] = accel_1.acceleration.z;
   doc["data"]["mpu_1"]["roll"] = roll_1;
   doc["data"]["mpu_1"]["pitch"] = pitch_1;
   doc["data"]["mpu_1"]["yaw"] = yaw_1;
@@ -203,6 +206,8 @@ void loop()
   doc["data"]["mpu_2"]["accel"]["x"] = accel_2.acceleration.x;
   doc["data"]["mpu_2"]["accel"]["y"] = accel_2.acceleration.y;
   doc["data"]["mpu_2"]["accel"]["z"] = accel_2.acceleration.z;
+  doc["data"]["mpu_1"]["accel_2"]["x"] = (atan(accel_2.acceleration.y / sqrt(pow(accel_2.acceleration.x, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
+  doc["data"]["mpu_1"]["accel_2"]["y"] = (atan(-1 * accel_2.acceleration.x / sqrt(pow(accel_2.acceleration.y, 2) + pow(accel_2.acceleration.z, 2))) * 180 / PI);
   doc["data"]["mpu_2"]["roll"] = roll_2;
   doc["data"]["mpu_2"]["pitch"] = pitch_2;
   doc["data"]["mpu_2"]["yaw"] = yaw_2;
