@@ -13,13 +13,12 @@ const int MPU_2 = 0x69; // 2. (AD0 High) MPU6050 I2C address
 void setup()
 {
   Serial.begin(115200);
-
-  Serial.println("Starting Errortest for MPU_1: ");
   Serial.println("");
+  Serial.println("Starting Errortest for MPU_1: ");
   calculate_IMU_error(MPU_1);
   delay(2000);
-  Serial.println("Starting Errortest for MPU_2: ");
   Serial.println("");
+  Serial.println("Starting Errortest for MPU_2: ");
   calculate_IMU_error(MPU_2);
 }
 
@@ -34,7 +33,7 @@ void calculate_IMU_error(int MPU)
   float GyroX, GyroY, GyroZ;
   float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
   int c = 0;
-  int testTimes = 800;
+  int testTimes = 200;
   // Setup wire for the current mpu
   Wire.begin();                // Initialize comunication
   Wire.beginTransmission(MPU); // Start communication with MPU6050 // MPU=0x68
@@ -52,6 +51,7 @@ void calculate_IMU_error(int MPU)
     Wire.write(0x3B);
     Wire.endTransmission(false);
     Wire.requestFrom(MPU, 6, true);
+    delay(20);
     AccX = (Wire.read() << 8 | Wire.read()) / 16384.0;
     AccY = (Wire.read() << 8 | Wire.read()) / 16384.0;
     AccZ = (Wire.read() << 8 | Wire.read()) / 16384.0;
@@ -71,14 +71,23 @@ void calculate_IMU_error(int MPU)
     Wire.write(0x43);
     Wire.endTransmission(false);
     Wire.requestFrom(MPU, 6, true);
+    delay(20);
     GyroX = Wire.read() << 8 | Wire.read();
+    delay(20);
     GyroY = Wire.read() << 8 | Wire.read();
+    delay(20);
     GyroZ = Wire.read() << 8 | Wire.read();
-    // Sum all readings
-    GyroErrorX = GyroErrorX + (GyroX / 131.0);
-    GyroErrorY = GyroErrorY + (GyroY / 131.0);
-    GyroErrorZ = GyroErrorZ + (GyroZ / 131.0);
-    c++;
+
+    if ((GyroY / 131.0) > 400 || (GyroX / 131.0) > 400 || (GyroZ / 131.0) > 400)
+    {
+      Serial.println("Error reading Gyro. Trying again.");
+    } else {
+      // Sum all readings
+      GyroErrorX = GyroErrorX + (GyroX / 131.0);
+      GyroErrorY = GyroErrorY + (GyroY / 131.0);
+      GyroErrorZ = GyroErrorZ + (GyroZ / 131.0);
+      c++;
+    }
   }
   //Divide the sum by testTimes to get the error value
   GyroErrorX = GyroErrorX / testTimes;

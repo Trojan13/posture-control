@@ -174,14 +174,14 @@ void loop()
   gyro_1_angle_x = gyro_1_angle_x + (gyro_1.gyro.x - mpu_1_gyro_err_x) * elapsedTime; // deg/s * s = deg
   gyro_1_angle_y = gyro_1_angle_y + (gyro_1.gyro.y - mpu_1_gyro_err_y) * elapsedTime;
   yaw_1 = yaw_1 + (gyro_1.gyro.z - mpu_1_gyro_err_z) * elapsedTime;
-  roll_1 = 0.96 * gyro_1_angle_x + 0.04 * acc_1_angle_x;
-  pitch_1 = 0.96 * gyro_1_angle_y + 0.04 * acc_1_angle_y;
+  roll_1 = 0.70 * gyro_1_angle_x + 0.30 * acc_1_angle_x;
+  pitch_1 = 0.70 * gyro_1_angle_y + 0.30 * acc_1_angle_y;
 
   gyro_2_angle_x = gyro_2_angle_x + (gyro_2.gyro.x - mpu_2_gyro_err_x) * elapsedTime; // deg/s * s = deg
   gyro_2_angle_y = gyro_2_angle_y + (gyro_2.gyro.y - mpu_2_gyro_err_y) * elapsedTime;
   yaw_2 = yaw_2 + (gyro_2.gyro.z - mpu_2_gyro_err_z) * elapsedTime;
-  roll_2 = 0.96 * gyro_2_angle_x + 0.04 * acc_2_angle_x;
-  pitch_2 = 0.96 * gyro_2_angle_y + 0.04 * acc_2_angle_y;
+  roll_2 = 0.70 * gyro_2_angle_x + 0.30 * acc_2_angle_x;
+  pitch_2 = 0.70 * gyro_2_angle_y + 0.30 * acc_2_angle_y;
 
   DynamicJsonDocument doc(1024);
 
@@ -195,7 +195,6 @@ void loop()
   doc["data"]["mpu_1"]["accel"]["z"] = accel_1.acceleration.z;
   doc["data"]["mpu_1"]["accel_2"]["x"] = (atan(accel_1.acceleration.y / sqrt(pow(accel_1.acceleration.x, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
   doc["data"]["mpu_1"]["accel_2"]["y"] = (atan(-1 * accel_1.acceleration.x / sqrt(pow(accel_1.acceleration.y, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
-  doc["data"]["mpu_1"]["accel_2"]["z"] = accel_1.acceleration.z;
   doc["data"]["mpu_1"]["roll"] = roll_1;
   doc["data"]["mpu_1"]["pitch"] = pitch_1;
   doc["data"]["mpu_1"]["yaw"] = yaw_1;
