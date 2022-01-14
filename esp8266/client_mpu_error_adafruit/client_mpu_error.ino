@@ -70,18 +70,6 @@ void loop()
 
 void calculate_IMU_error()
 {
-  // Initialize variables
-  sensors_event_t gyro_1;
-  sensors_event_t gyro_2;
-  sensors_event_t accel_1;
-  sensors_event_t accel_2;
-
-  mpu_gyro_1->getEvent(&gyro_1);
-  mpu_gyro_2->getEvent(&gyro_2);
-
-  mpu_accel_1->getEvent(&accel_1);
-  mpu_accel_2->getEvent(&accel_2);
-
   float acc_1_angle_x, acc_1_angle_y, acc_2_angle_x, acc_2_angle_y;
   float acc_1_angle_x_err, acc_1_angle_y_err, acc_2_angle_x_err, acc_2_angle_y_err;
 
@@ -100,6 +88,18 @@ void calculate_IMU_error()
   // Read accelerometer values 200 times
   while (c < testTimes)
   {
+
+    sensors_event_t gyro_1;
+    sensors_event_t gyro_2;
+    sensors_event_t accel_1;
+    sensors_event_t accel_2;
+
+    mpu_gyro_1->getEvent(&gyro_1);
+    mpu_gyro_2->getEvent(&gyro_2);
+
+    mpu_accel_1->getEvent(&accel_1);
+    mpu_accel_2->getEvent(&accel_2);
+
     acc_1_angle_x = (atan(accel_1.acceleration.y / sqrt(pow(accel_1.acceleration.x, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
     acc_1_angle_y = (atan(-1 * accel_1.acceleration.x / sqrt(pow(accel_1.acceleration.y, 2) + pow(accel_1.acceleration.z, 2))) * 180 / PI);
 
