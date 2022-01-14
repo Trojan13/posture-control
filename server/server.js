@@ -56,8 +56,8 @@ readLineParser.on('data', (data) => {
           sensorDataObject.pressure2 = comPortdataObject.data.fsr_2 + sensorDataCalibrateObject.pressure2;
         }
         if (comPortdataObject.client === 'mpu_1') {
-          sensorDataObject.angle1 = comPortdataObject.data.mpu_1.accel_2.y / 50 -2;
-          sensorDataObject.angle2 = comPortdataObject.data.mpu_2.accel_2.y / 50 -2;
+          sensorDataObject.angle1 = comPortdataObject.data.mpu_1.roll;
+          sensorDataObject.angle2 = comPortdataObject.data.mpu_2.roll;
         }
         if (comPortdataObject.client === 'mpu_2') {
           sensorDataObject.angle3 = comPortdataObject.data.mpu_1.roll;
