@@ -3,7 +3,7 @@
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 
-const char *client_name = "mpu_1";
+const char *client_name = "mpu_2";
 const char *ssid = "posture-control";          // The SSID (name) of the Wi-Fi network you want to connect to
 const char *password = "mpu6050!";             // The password of the Wi-Fi network
 const char *websockets_adress = "192.168.4.1"; // ws adress
@@ -13,23 +13,23 @@ WebSocketsClient ws_client;
 #define MPU6050_1 0x68
 #define MPU6050_2 0x69
 
-float mpu_1_acc_err_x = 0.45;
-float mpu_1_acc_err_y = -0.67;
-float mpu_1_gyro_err_x = 0.04;
-float mpu_1_gyro_err_y = 0.51;
-float mpu_1_gyro_err_z = 0.45;
+float mpu_1_acc_err_x = -1.17;
+float mpu_1_acc_err_y = -3.32;
+float mpu_1_gyro_err_x = -0.45;
+float mpu_1_gyro_err_y = -0.20;
+float mpu_1_gyro_err_z = 0.00;
 
-float mpu_2_acc_err_x = 0.07;
-float mpu_2_acc_err_y = -0.15;
-float mpu_2_gyro_err_x = 0.95;
-float mpu_2_gyro_err_y = 0.86;
-float mpu_2_gyro_err_z = 0.76;
+float mpu_2_acc_err_x = -0.89;
+float mpu_2_acc_err_y = -1.67;
+float mpu_2_gyro_err_x = 1.74;
+float mpu_2_gyro_err_y = 1.70;
+float mpu_2_gyro_err_z = 0.00;
 
-float elapsedTime, currentTime, previousTime;
-float acc_1_angle_x, acc_1_angle_y, gyro_1_angle_x, gyro_1_angle_y, gyro_1_angle_z;
-float acc_2_angle_x, acc_2_angle_y, gyro_2_angle_x, gyro_2_angle_y, gyro_2_angle_z;
-float roll_1, pitch_1, yaw_1;
-float roll_2, pitch_2, yaw_2;
+float elapsedTime = 0, currentTime = 0, previousTime = 0;
+float acc_1_angle_x = 0, acc_1_angle_y = 0, gyro_1_angle_x = 0, gyro_1_angle_y = 0, gyro_1_angle_z = 0;
+float acc_2_angle_x = 0, acc_2_angle_y = 0, gyro_2_angle_x = 0, gyro_2_angle_y = 0, gyro_2_angle_z = 0;
+float roll_1 = 0, pitch_1 = 0, yaw_1 = 0;
+float roll_2 = 0, pitch_2 = 0, yaw_2 = 0;
 
 Adafruit_MPU6050 mpu_1, mpu_2;
 Adafruit_Sensor *mpu_gyro_1, *mpu_gyro_2, *mpu_accel_1, *mpu_accel_2;
@@ -175,14 +175,14 @@ void loop()
   gyro_1_angle_x = gyro_1_angle_x + (gyro_1.gyro.x - mpu_1_gyro_err_x) * elapsedTime; // deg/s * s = deg
   gyro_1_angle_y = gyro_1_angle_y + (gyro_1.gyro.y - mpu_1_gyro_err_y) * elapsedTime;
   yaw_1 = yaw_1 + (gyro_1.gyro.z - mpu_1_gyro_err_z) * elapsedTime;
-  roll_1 = 0.70 * gyro_1_angle_x + 0.30 * acc_1_angle_x;
-  pitch_1 = 0.70 * gyro_1_angle_y + 0.30 * acc_1_angle_y;
+  roll_1 = 0.96 * gyro_1_angle_x + 0.04 * acc_1_angle_x;
+  pitch_1 = 0.96 * gyro_1_angle_y + 0.04 * acc_1_angle_y;
 
   gyro_2_angle_x = gyro_2_angle_x + (gyro_2.gyro.x - mpu_2_gyro_err_x) * elapsedTime; // deg/s * s = deg
   gyro_2_angle_y = gyro_2_angle_y + (gyro_2.gyro.y - mpu_2_gyro_err_y) * elapsedTime;
   yaw_2 = yaw_2 + (gyro_2.gyro.z - mpu_2_gyro_err_z) * elapsedTime;
-  roll_2 = 0.70 * gyro_2_angle_x + 0.30 * acc_2_angle_x;
-  pitch_2 = 0.70 * gyro_2_angle_y + 0.30 * acc_2_angle_y;
+  roll_2 = 0.96 * gyro_2_angle_x + 0.04 * acc_2_angle_x;
+  pitch_2 = 0.96 * gyro_2_angle_y + 0.04 * acc_2_angle_y;
 
   DynamicJsonDocument doc(1024);
 

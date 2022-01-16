@@ -79,7 +79,7 @@ void calculate_IMU_error()
   float elapsedTime, currentTime, previousTime;
 
   int c = 0;
-  int testTimes = 800;
+  int testTimes = 200;
   // Setup wire for the current mpu
 
   // Call this function if you need to get the IMU error values for your module
@@ -131,6 +131,7 @@ void calculate_IMU_error()
     gyro_2_angle_y_err = gyro_2_angle_y_err + gyro_2_angle_y;
 
     c++;
+    delay(100);
   }
   //Divide the sum by testTimes to get the error value
   acc_1_angle_x_err = acc_1_angle_x_err / testTimes;
@@ -162,7 +163,7 @@ void calculate_IMU_error()
   Serial.println(gyro_1_angle_y_err);
   Serial.print("gyro_1_angle_z_err: ");
   Serial.println(gyro_1_angle_z_err);
-  Serial.print("@@@@@@@@@@@ Error Values from: MPU 0x68 @@@@@@@@@@@");
+  Serial.print("@@@@@@@@@@@ Error Values from: MPU 0x69 @@@@@@@@@@@");
   Serial.println("");
   Serial.print("acc_2_angle_x_err: ");
   Serial.println(acc_2_angle_x_err);
