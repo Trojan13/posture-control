@@ -50,6 +50,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
   break;
   case WStype_TEXT:
     Serial.printf("Get text: %s\n", payload);
+    playNotification();
     break;
   case WStype_BIN:
     Serial.printf("Get binary length: %u\n", length);
@@ -216,4 +217,12 @@ void loop()
   ws_client.sendTXT(output);
   Serial.println(output);
   delay(100);
+}
+
+void playNotification()
+{
+  tone(14, 300, 50);
+  tone(14, 400, 50);
+  tone(14, 800, 150);
+  tone(14, 1000, 350);
 }

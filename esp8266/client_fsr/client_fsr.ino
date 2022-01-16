@@ -31,6 +31,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
   break;
   case WStype_TEXT:
     Serial.printf("Get text: %s\n", payload);
+    playNotification();
     break;
   case WStype_BIN:
     Serial.printf("Get binary length: %u\n", length);
@@ -69,7 +70,7 @@ void setupWifi()
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting Websocket Server...");
-  ws_client.begin(websockets_adress, websockets_port, strcat("/ws?client=" , client_name ));
+  ws_client.begin(websockets_adress, websockets_port, strcat("/ws?client=", client_name));
   ws_client.onEvent(webSocketEvent);
   ws_client.enableHeartbeat(15000, 3000, 2);
   ws_client.setReconnectInterval(5000);
@@ -125,4 +126,12 @@ void loop()
   ws_client.sendTXT(output);
   Serial.println(output);
   delay(100);
+}
+
+void playNotification()
+{
+  tone(14, 300, 50);
+  tone(14, 400, 50);
+  tone(14, 800, 150);
+  tone(14, 1000, 350);
 }
