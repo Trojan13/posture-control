@@ -29,9 +29,9 @@ void loop()
 void calculate_IMU_error(int MPU)
 {
   // Initialize variables
-  float AccX, AccY, AccZ;
-  float GyroX, GyroY, GyroZ;
-  float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
+  float AccX=0, AccY=0, AccZ=0;
+  float GyroX=0, GyroY=0, GyroZ=0;
+  float AccErrorX=0, AccErrorY=0, GyroErrorX=0, GyroErrorY=0, GyroErrorZ=0;
   int c = 0;
   int testTimes = 200;
   // Setup wire for the current mpu

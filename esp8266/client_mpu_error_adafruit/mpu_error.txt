@@ -1,0 +1,30 @@
+client_1
+    @@@@@@@@@@@ Error Values from: MPU 0x68 @@@@@@@@@@@
+    acc_1_angle_x_err: -0.38
+    acc_1_angle_y_err: -3.17
+    gyro_1_angle_x_err: -0.29
+    gyro_1_angle_y_err: -0.55
+    gyro_1_angle_z_err: 0.00
+    @@@@@@@@@@@ Error Values from: MPU 0x69 @@@@@@@@@@@
+    acc_2_angle_x_err: -2.08
+    acc_2_angle_y_err: 0.69
+    gyro_2_angle_x_err: 1.97
+    gyro_2_angle_y_err: 1.85
+    gyro_2_angle_z_err: 0.00
+client_2
+    @@@@@@@@@@@ Error Values from: MPU 0x68 @@@@@@@@@@@
+    acc_1_angle_x_err: -1.17
+    acc_1_angle_y_err: -3.32
+    gyro_1_angle_x_err: -0.45
+    gyro_1_angle_y_err: -0.20
+    gyro_1_angle_z_err: 0.00
+    @@@@@@@@@@@ Error Values from: MPU 0x69 @@@@@@@@@@@
+    acc_2_angle_x_err: -0.89
+    acc_2_angle_y_err: -1.67
+    gyro_2_angle_x_err: 1.74
+    gyro_2_angle_y_err: 1.70
+    gyro_2_angle_z_err: 0.00
+
+
+
+
