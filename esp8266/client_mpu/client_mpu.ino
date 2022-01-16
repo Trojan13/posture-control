@@ -3,7 +3,7 @@
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 
-const char *client_name = "mpu_2";
+const char *client_name = "mpu_1";
 const char *ssid = "posture-control";          // The SSID (name) of the Wi-Fi network you want to connect to
 const char *password = "mpu6050!";             // The password of the Wi-Fi network
 const char *websockets_adress = "192.168.4.1"; // ws adress
@@ -13,16 +13,16 @@ WebSocketsClient ws_client;
 #define MPU6050_1 0x68
 #define MPU6050_2 0x69
 
-float mpu_1_acc_err_x = -1.17;
-float mpu_1_acc_err_y = -3.32;
-float mpu_1_gyro_err_x = -0.45;
-float mpu_1_gyro_err_y = -0.20;
+float mpu_1_acc_err_x = -0.38;
+float mpu_1_acc_err_y = -3.17;
+float mpu_1_gyro_err_x = -0.29;
+float mpu_1_gyro_err_y = -0.55;
 float mpu_1_gyro_err_z = 0.00;
 
-float mpu_2_acc_err_x = -0.89;
-float mpu_2_acc_err_y = -1.67;
-float mpu_2_gyro_err_x = 1.74;
-float mpu_2_gyro_err_y = 1.70;
+float mpu_2_acc_err_x = -2.08;
+float mpu_2_acc_err_y = 0.69;
+float mpu_2_gyro_err_x = 1.97;
+float mpu_2_gyro_err_y = 1.85;
 float mpu_2_gyro_err_z = 0.00;
 
 float elapsedTime = 0, currentTime = 0, previousTime = 0;
