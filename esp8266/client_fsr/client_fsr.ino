@@ -131,7 +131,11 @@ void loop()
 void playNotification()
 {
   tone(14, 300, 50);
+  delay(100);
   tone(14, 400, 50);
+  delay(100);
   tone(14, 800, 150);
+  delay(100);
   tone(14, 1000, 350);
+  delay(100);
 }
