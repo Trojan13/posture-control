@@ -253,7 +253,7 @@ void setup() {
   Serial.begin(115200);
   while (!Serial); // wait for Leonardo enumeration, others continue immediately
   Serial.println(F("Start:"));
-  mpu.SetAddress(MPU6050_DEFAULT_ADDRESS)
+  mpu.SetAddress(MPU6050_DEFAULT_ADDRESS);
     mpu.Set_DMP_Output_Rate_Hz(10);           // Set the DMP output rate from 200Hz to 5 Minutes.
   //mpu.Set_DMP_Output_Rate_Seconds(10);   // Set the DMP output rate in Seconds
   //mpu.Set_DMP_Output_Rate_Minutes(5);    // Set the DMP output rate in Minute

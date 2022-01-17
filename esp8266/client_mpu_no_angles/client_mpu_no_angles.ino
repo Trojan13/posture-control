@@ -22,7 +22,6 @@ float roll_1 = 0, pitch_1 = 0, yaw_1 = 0;
 float roll_2 = 0, pitch_2 = 0, yaw_2 = 0;
 
 Simple_MPU6050 mpu_1, mpu_2;
-ENABLE_MPU_OVERFLOW_PROTECTION();
 bool sensorsSetup;
 
 //***************************************************************************************
@@ -108,7 +107,7 @@ void setupWifi()
   setupSensors();
 }
 
-void sendJSON(int16_t *accelX, int16_t *accelY, int16_t *accelZ, char *mpu)
+void sendJSON(int16_t accelX, int16_t accelY, int16_t accelZ, char mpu)
 {
   DynamicJsonDocument doc(1024);
 
@@ -124,8 +123,9 @@ void sendJSON(int16_t *accelX, int16_t *accelY, int16_t *accelZ, char *mpu)
   Serial.println(output);
 }
 
-void send_values_mpu_1(int16_t *accel, int32_t *quat, uint16_t SpamDelay = 100)
+void send_values_mpu_1(int16_t *gyro,int16_t *accel, int32_t *quat, uint32_t *timestamp)
 {
+  uint16_t SpamDelay = 100;
   Quaternion q;
   VectorFloat gravity;
   VectorInt16 aa, aaReal, aaWorld;
@@ -137,8 +137,9 @@ void send_values_mpu_1(int16_t *accel, int32_t *quat, uint16_t SpamDelay = 100)
   sendJSON(aaWorld.x, aaWorld.y, aaWorld.z, 'MPU_2');
 }
 
-void send_values_mpu_2(int16_t *accel, int32_t *quat, uint16_t SpamDelay = 100)
+void send_values_mpu_2(int16_t *gyro ,int16_t *accel, int32_t *quat, uint32_t *timestamp)
 {
+  uint16_t SpamDelay = 100;
   Quaternion q;
   VectorFloat gravity;
   VectorInt16 aa, aaReal, aaWorld;
@@ -173,15 +174,15 @@ void setupSensors()
 
   Serial.print(F("MPU_1 "));
   mpu_1.PrintActiveOffsets();
-  mpu_1.CalibrateGyro(CalibrationLoops);
-  mpu_1.CalibrateAccel(CalibrationLoops);
+  mpu_1.CalibrateGyro(8);
+  mpu_1.CalibrateAccel(8);
   mpu_1.PrintActiveOffsets();
   mpu_1.on_FIFO(send_values_mpu_1);
 
   Serial.print(F("MPU_2 "));
   mpu_2.PrintActiveOffsets();
-  mpu_2.CalibrateGyro(CalibrationLoops);
-  mpu_2.CalibrateAccel(CalibrationLoops);
+  mpu_2.CalibrateGyro(8);
+  mpu_2.CalibrateAccel(8);
   mpu_2.PrintActiveOffsets();
   mpu_2.on_FIFO(send_values_mpu_1);
 
@@ -197,7 +198,9 @@ void loop()
 {
   ws_client.loop();
 
-  mpu.dmp_read_fifo(); // Must be in loop
+  
+mpu_1.dmp_read_fifo();
+mpu_2.dmp_read_fifo();// Must be in loop
 }
 
 void playNotification()
