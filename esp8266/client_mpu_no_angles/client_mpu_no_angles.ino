@@ -13,16 +13,9 @@ WebSocketsClient ws_client;
 #define MPU6050_ADDRESS_AD0_LOW 0x68  // address pin low (GND), default for InvenSense evaluation board
 #define MPU6050_ADDRESS_AD0_HIGH 0x69 // address pin high (VCC)
 #define MPU6050_DEFAULT_ADDRESS MPU6050_ADDRESS_AD0_LOW
-#define OFFSETS_1 0, 0, 0, 0, 0, 0
-#define OFFSETS_2 0, 0, 0, 0, 0, 0
+#define OFFSETS 0, 0, 0, 0, 0, 0
 
-float elapsedTime = 0, currentTime = 0, previousTime = 0;
-float acc_1_angle_x = 0, acc_1_angle_y = 0, gyro_1_angle_x = 0, gyro_1_angle_y = 0, gyro_1_angle_z = 0;
-float acc_2_angle_x = 0, acc_2_angle_y = 0, gyro_2_angle_x = 0, gyro_2_angle_y = 0, gyro_2_angle_z = 0;
-float roll_1 = 0, pitch_1 = 0, yaw_1 = 0;
-float roll_2 = 0, pitch_2 = 0, yaw_2 = 0;
-
-Simple_MPU6050 mpu_1, mpu_2;
+Simple_MPU6050 mpu;
 bool sensorsSetup;
 
 //***************************************************************************************
@@ -138,20 +131,6 @@ void send_values_mpu_1(int16_t *gyro, int16_t *accel, int32_t *quat, uint32_t *t
   sendJSON(aaWorld.x, aaWorld.y, aaWorld.z, 'MPU_2');
 }
 
-void send_values_mpu_2(int16_t *gyro, int16_t *accel, int32_t *quat, uint32_t *timestamp)
-{
-  uint16_t SpamDelay = 100;
-  Quaternion q;
-  VectorFloat gravity;
-  VectorInt16 aa, aaReal, aaWorld;
-  mpu_1.GetQuaternion(&q, quat);
-  mpu_1.GetGravity(&gravity, &q);
-  mpu_1.SetAccel(&aa, accel);
-  mpu_1.GetLinearAccel(&aaReal, &aa, &gravity);
-  mpu_1.GetLinearAccelInWorld(&aaWorld, &aaReal, &q);
-  sendJSON(aaWorld.x, aaWorld.y, aaWorld.z, 'MPU_2');
-}
-
 void setupSensors()
 {
   uint8_t val;
@@ -159,10 +138,9 @@ void setupSensors()
   while (!Serial)
     ;   // wait for Leonardo enumeration, others continue immediately
         //  Wire.begin();
-  Serial.print(F("MPU_2 "));
   // Lets test for connection on any address
-  mpu_1.SetAddress(MPU6050_ADDRESS_AD0_LOW).TestConnection(1);
-  mpu_1.load_DMP_Image(OFFSETS_1); // Does it all for you
+  mpu.SetAddress(MPU6050_ADDRESS_AD0_LOW).TestConnection(1);
+  mpu.load_DMP_Image(OFFSETS); // Does it all for you
   Serial.print(F("Setup Complete in "));
   Serial.print(millis());
   Serial.println(F(" Miliseconds"));
@@ -171,31 +149,11 @@ void setupSensors()
                    " Lets get started here are the Starting and Ending Offsets\n"
                    " Place the new offsets on the #define OFFSETS... line above for quick startup"));
 
-  mpu_1.PrintActiveOffsets();
-  mpu_1.CalibrateGyro(8);
-  mpu_1.CalibrateAccel(8);
-  mpu_1.PrintActiveOffsets();
-  mpu_1.on_FIFO(send_values_mpu_1);
-
-  delay(2000);
-
-  Serial.print(F("MPU_2 "));
-  // Lets test for connection on any address
-  mpu_2.SetAddress(MPU6050_ADDRESS_AD0_HIGH).TestConnection(1);
-  mpu_2.load_DMP_Image(OFFSETS_2); // Does it all for you
-  Serial.print(F("Setup Complete in "));
-  Serial.print(millis());
-  Serial.println(F(" Miliseconds"));
-  Serial.println(F("If this is your first time running this program with this specific MPU6050,\n"
-                   " Start by having the MPU6050 placed  stationary on a flat surface to get a proper accellerometer calibration\n"
-                   " Lets get started here are the Starting and Ending Offsets\n"
-                   " Place the new offsets on the #define OFFSETS... line above for quick startup"));
-
-  mpu_2.PrintActiveOffsets();
-  mpu_2.CalibrateGyro(8);
-  mpu_2.CalibrateAccel(8);
-  mpu_2.PrintActiveOffsets();
-  mpu_2.on_FIFO(send_values_mpu_2);
+  mpu.PrintActiveOffsets();
+  mpu.CalibrateGyro(8);
+  mpu.CalibrateAccel(8);
+  mpu.PrintActiveOffsets();
+  mpu.on_FIFO(send_values_mpu_1);
 
   Serial.print(F("full calibration Complete in "));
   Serial.print(millis());
@@ -209,9 +167,6 @@ void loop()
 {
   ws_client.loop();
   mpu_1.dmp_read_fifo();
-  delay(50);
-  mpu_2.dmp_read_fifo(); // Must be in loop
-  delay(50);
 }
 
 void playNotification()
