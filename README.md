@@ -21,17 +21,21 @@ A project within the module "ubiqutous computing". The aim of the project is to 
 - [x] Test with three clients
 - [x] Make server.ino work with webserver
 - [x] Add status display for clients
-- [ ] Add beeper to foot https://www.arduino.cc/en/Tutorial/BuiltInExamples/toneMelody
+- [x] Add beeper to foot https://www.arduino.cc/en/Tutorial/BuiltInExamples/toneMelody
+- [x] Add beeper to back
 - [x] Request status on boot for clients
 - [x] Add function to send data to clients
 - [ ] Server.js should process data further
-- [ ] Calibrate MPU6050 Sensors
-- [ ] Calculate right angles from mpu data
+- [o] Calibrate MPU6050 Sensors
+- [o] Calculate right angles from mpu data
 - [ ] Display the data on frontend
-- [ ] Look into neural networks for posture recognition
+- [x] Look into neural networks for posture recognition
 - [ ] Improve webserver data handling
-- [ ] Smooth values from sensors
-- [ ] Use multiple axis
+- [o] Smooth values from sensors
+- [o] Use multiple axis
+- [ ] Find better method to time the training
+- [ ] Restrict training to 20 lines per file
+- [ ] Fixed null error in training
 
 ## Architecture
 
