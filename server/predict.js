@@ -60,9 +60,11 @@ readLineParser.on('data', (data) => {
         }
         if (myData.fsr_2 && myData.fsr_2 && myData.gyrox_1 && myData.gyroy_1 && myData.gyroz_1 && myData.gyrox_2 && myData.gyroy_2 && myData.gyroz_2 && myData.gyrox_3 && myData.gyroy_3 && myData.gyroz_3 && myData.gyrox_4 && myData.gyroy_4 && myData.gyroz_4) {
             if (predictionDone) {
-                predictionDone = false;
-                if (liveData.length < 168) {
-                    liveData.push(comPortdataObject.data.fsr_1, comPortdataObject.data.fsr_2, comPortdataObject.data.gyrox_1, comPortdataObject.data.gyroy_1, comPortdataObject.data.gyroz_1, comPortdataObject.data.gyrox_2, comPortdataObject.data.gyroy_2, comPortdataObject.data.gyroz_2, comPortdataObject.data.gyrox_3, comPortdataObject.data.gyroy_3, comPortdataObject.data.gyroz_3, comPortdataObject.data.gyrox_4, comPortdataObject.data.gyroy_4, comPortdataObject.data.gyroz_4)
+                if (liveData.length < 15) {
+                    console.log(liveData.length);
+                    liveData.push(myData.fsr_1, myData.fsr_2, myData.gyrox_1, myData.gyroy_1, myData.gyroz_1, myData.gyrox_2, myData.gyroy_2, myData.gyroz_2, myData.gyrox_3, myData.gyroy_3, myData.gyroz_3, myData.gyrox_4, myData.gyroy_4, myData.gyroz_4)
+                } else {
+                    predictionDone = false;
                 }
             } else {
                 if (!predictionDone && liveData.length) {
@@ -81,8 +83,9 @@ readLineParser.on('data', (data) => {
 
 const predict = (model, newSampleData) => {
     tf.tidy(() => {
+        console.log(newSampleData);
         const inputData = newSampleData;
-        const input = tf.tensor2d([inputData], [1, 168]);
+        const input = tf.tensor2d([inputData], [1, 28]);
         const predictOut = model.predict(input);
         const winner = gestureClasses[predictOut.argMax(-1).dataSync()[0]];
 
