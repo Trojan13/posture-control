@@ -5,7 +5,7 @@ const SerialPort = require('serialport');
 const readLineParser = new SerialPort.parsers.Readline();
 
 let liveData = [];
-let predictionDone = false;
+let predictionDone = true;
 
 let model;
 const gestureClasses = ['correct', 'wrong'];
@@ -19,7 +19,7 @@ let port = new SerialPort('COM6', {
     baudRate: 115200
 });
 
-port.on('open', () => {
+port.on('open', async () => {
     console.log('Serial Port Connected...');
     model = await tf.loadLayersModel('file://model/model.json');
     port.pipe(readLineParser);
@@ -35,7 +35,6 @@ readLineParser.on('data', (data) => {
     try {
         const comPortdataObject = JSON.parse(data);
         if (comPortdataObject.type === "sensor-data") {
-            daydream.onStateChange(function (data) {
                 if (predictionDone) {
                     predictionDone = false;
                     if (liveData.length < 168) {
@@ -44,11 +43,10 @@ readLineParser.on('data', (data) => {
                 } else {
                     if (!predictionDone && liveData.length) {
                         predictionDone = true;
-                        predict(model, liveData, socket);
+                        predict(model, liveData);
                         liveData = [];
                     }
                 }
-            });
         }
     } catch (e) {
         console.log('ReadLineParserError: ', e);
@@ -56,7 +54,7 @@ readLineParser.on('data', (data) => {
     }
 });
 
-const predict = (model, newSampleData, socket) => {
+const predict = (model, newSampleData) => {
     tf.tidy(() => {
         const inputData = newSampleData;
         const input = tf.tensor2d([inputData], [1, 168]);
@@ -67,10 +65,10 @@ const predict = (model, newSampleData, socket) => {
 
         switch (winner) {
             case 'correct':
-                socket.emit('correct');
+                //socket.emit('correct');
                 break;
             case 'wrong':
-                socket.emit('wrong');
+               // socket.emit('wrong');
                 break;
         }
     });
