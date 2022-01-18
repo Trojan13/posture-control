@@ -10,7 +10,7 @@ let numClasses = movementClasses.length;
 let numSamplesPerGesture = 20;
 let totalNumDataFiles = numSamplesPerGesture * numClasses;
 let numPointsOfData = 14;
-let numLinesPerFile = 15;
+let numLinesPerFile = 20;
 let totalNumDataPerFile = numPointsOfData * numLinesPerFile;
 
 function readFile(file) {
@@ -160,6 +160,6 @@ const createModel = async (xTrain, yTrain, xTest, yTest) => {
     validationData: [xTest, yTest],
   });
 
-  // await model.save('file://model');
+  await model.save('file://model');
   return model;
 }
