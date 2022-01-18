@@ -8,6 +8,7 @@
     "build": "parcel build"
   },
   "dependencies": {
+    "iohook": "0.6.6",
     "serialport": "^9.2.8"
   }
 }
