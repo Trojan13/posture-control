@@ -2,6 +2,8 @@ const SerialPort = require('serialport');
 const fs = require('fs');
 const readLineParser = new SerialPort.parsers.Readline();
 const ioHook = require('iohook');
+const cp = require('child_process');
+
 
 
 ioHook.start();
@@ -9,11 +11,16 @@ ioHook.start();
 let streamCorrect;
 let streamWrong;
 
+const MAX_LINES = 20;
+
 let gestureType;
 let startedCorrect = false;
 let startedWrong = false;
 let samplesCorrectNum = 0;
 let samplesWrongNum = 0;
+let linesCorrect = 0;
+let linesWrong = 0;
+
 
 let myData = {};
 
@@ -56,6 +63,7 @@ ioHook.on('keypress', function (msg) {
       streamCorrect.end();
       startedCorrect = false;
       samplesCorrectNum += 1;
+      linesCorrect = 0;
     }
   } else if (startedWrong && msg.rawcode === 66) { // BBBBBBBB
     console.log('stopped wrong');
@@ -63,9 +71,12 @@ ioHook.on('keypress', function (msg) {
       streamWrong.end();
       startedWrong = false;
       samplesWrongNum += 1;
+      linesWrong = 0;
     }
   }
 });
+
+
 
 readLineParser.on('data', (data) => {
   try {
@@ -93,11 +104,13 @@ readLineParser.on('data', (data) => {
       }
     }
     if (myData.fsr_2 && myData.fsr_2 && myData.gyrox_1 && myData.gyroy_1 && myData.gyroz_1 && myData.gyrox_2 && myData.gyroy_2 && myData.gyroz_2 && myData.gyrox_3 && myData.gyroy_3 && myData.gyroz_3 && myData.gyrox_4 && myData.gyroy_4 && myData.gyroz_4) {
-      if (startedCorrect) {
+      if (startedCorrect && linesCorrect <= MAX_LINES) {
         streamCorrect.write(`${myData.fsr_1} ${myData.fsr_2} ${myData.gyrox_1} ${myData.gyroy_1} ${myData.gyroz_1} ${myData.gyrox_2} ${myData.gyroy_2} ${myData.gyroz_2} ${myData.gyrox_3} ${myData.gyroy_3} ${myData.gyroz_3} ${myData.gyrox_4} ${myData.gyroy_4} ${myData.gyroz_4}\r\n`);
+        linesCorrect++;
       }
-      if (startedWrong) {
+      if (startedWrong && linesWrong <= MAX_LINES) {
         streamWrong.write(`${myData.fsr_1} ${myData.fsr_2} ${myData.gyrox_1} ${myData.gyroy_1} ${myData.gyroz_1} ${myData.gyrox_2} ${myData.gyroy_2} ${myData.gyroz_2} ${myData.gyrox_3} ${myData.gyroy_3} ${myData.gyroz_3} ${myData.gyrox_4} ${myData.gyroy_4} ${myData.gyroz_4}\r\n`);
+        linesWrong++;
       }
       myData = {};
     }
@@ -106,3 +119,17 @@ readLineParser.on('data', (data) => {
     console.log('ReadLineParser:', data);
   }
 });
+
+setInterval(() => {
+  if (startedWrong || startedCorrect && linesWrong == 15 || linesCorrect == 15) {
+    beep(750, 300);
+  }
+  if (startedWrong || startedCorrect && linesWrong == 18 || linesCorrect == 18) {
+    beep(1000, 150);
+    beep(1000, 150);
+  }
+}, 1000);
+
+function beep(frequency, duration) {
+  cp.execSync(`rundll32.exe Kernel32.dll,Beep ${frequency},${duration}`);
+}
