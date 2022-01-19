@@ -7,11 +7,15 @@ let justLabels = [];
 const movementClasses = ['correct', 'wrong'];
 let numClasses = movementClasses.length;
 
-let numSamplesPerGesture = 20;
+let numSamplesPerGesture = 30;
 let totalNumDataFiles = numSamplesPerGesture * numClasses;
 let numPointsOfData = 14;
-let numLinesPerFile = 20;
+let numLinesPerFile = 21;
 let totalNumDataPerFile = numPointsOfData * numLinesPerFile;
+
+console.log("totalNumDataFiles:", totalNumDataFiles);
+console.log("numClasses:", numClasses);
+console.log("totalNumDataPerFile:", totalNumDataPerFile);
 
 function readFile(file) {
   let allFileData = [];
@@ -25,11 +29,14 @@ function readFile(file) {
           let dataArray = line.split(" ").map(arrayItem => parseFloat(arrayItem));
           allFileData.push(...dataArray);
           let concatArray = [...allFileData];
-
+          //console.log(concatArray.length);
           if (concatArray.length === totalNumDataPerFile) {
             let label = file.split("_")[1];
             let labelIndex = movementClasses.indexOf(label)
-            resolve({ features: concatArray, label: labelIndex })
+            resolve({
+              features: concatArray,
+              label: labelIndex
+            })
           }
         });
       }
@@ -43,11 +50,18 @@ const readDir = () =>
 (async () => {
   const filenames = await readDir();
   let allData = [];
+  console.log(filenames.length);
+
   filenames.map(async file => { // 75 times
     let originalContent = await readFile(file);
+    console.log(originalContent);
+
     allData.push(originalContent);
+    console.log(allData.length);
+
     if (allData.length === totalNumDataFiles) {
       format(allData)
+      console.log("aaaaa");
     }
   })
 })();
@@ -142,11 +156,21 @@ const split = (featuresTensor, labelsTensor, testSplit) => {
 }
 
 const createModel = async (xTrain, yTrain, xTest, yTest) => {
-  const params = { learningRate: 0.1, epochs: 40 };
+  const params = {
+    learningRate: 0.1,
+    epochs: 40
+  };
   // Define the topology of the model: two dense layers.
   const model = tf.sequential();
-  model.add(tf.layers.dense({ units: 10, activation: 'sigmoid', inputShape: [xTrain.shape[1]] }));
-  model.add(tf.layers.dense({ units: numClasses, activation: 'softmax' }));
+  model.add(tf.layers.dense({
+    units: 10,
+    activation: 'sigmoid',
+    inputShape: [xTrain.shape[1]]
+  }));
+  model.add(tf.layers.dense({
+    units: numClasses,
+    activation: 'softmax'
+  }));
 
   const optimizer = tf.train.adam(params.learningRate);
   model.compile({
@@ -160,6 +184,6 @@ const createModel = async (xTrain, yTrain, xTest, yTest) => {
     validationData: [xTest, yTest],
   });
 
-  await model.save('file://model');
+  //await model.save('file://model');
   return model;
 }

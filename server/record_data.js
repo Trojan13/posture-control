@@ -11,7 +11,7 @@ ioHook.start();
 let streamCorrect;
 let streamWrong;
 
-const MAX_LINES = 20;
+const MAX_LINES = 19;
 
 let gestureType;
 let startedCorrect = false;
@@ -45,6 +45,7 @@ port.on('error', (err) => {
 ioHook.on('keypress', function (msg) {
   if (!startedCorrect && msg.rawcode === 65) { //AAAAAA
     console.log('recording correct');
+    linesWrong = 0;
     gestureType = 'correct';
     startedCorrect = true;
     streamCorrect = fs.createWriteStream(`./data/sample_${gestureType}_${samplesCorrectNum}.txt`, {
@@ -52,6 +53,7 @@ ioHook.on('keypress', function (msg) {
     });
   } else if (!startedWrong && msg.rawcode === 66) { // BBBBBBBB
     console.log('recording wrong');
+    linesCorrect = 0;
     gestureType = 'wrong';
     startedWrong = true;
     streamWrong = fs.createWriteStream(`./data/sample_${gestureType}_${samplesWrongNum}.txt`, {
@@ -121,15 +123,10 @@ readLineParser.on('data', (data) => {
 });
 
 setInterval(() => {
-  if (startedWrong || startedCorrect && linesWrong == 15 || linesCorrect == 15) {
-    beep(750, 300);
+  if ((startedWrong || startedCorrect) && (linesWrong === 18 || linesCorrect === 18)) {
+    console.log("18");
   }
-  if (startedWrong || startedCorrect && linesWrong == 18 || linesCorrect == 18) {
-    beep(1000, 150);
-    beep(1000, 150);
+  if ((startedWrong || startedCorrect) && (linesWrong === 20 || linesCorrect === 20)) {
+    console.log("20");
   }
-}, 1000);
-
-function beep(frequency, duration) {
-  cp.execSync(`rundll32.exe Kernel32.dll,Beep ${frequency},${duration}`);
-}
+}, 100);
