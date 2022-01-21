@@ -188,6 +188,10 @@ void loop()
 
   doc["type"] = "sensor-data";
   doc["client"] = client_name;
+  doc["data"]["time"]["elapsedTime"] = elapsedTime;
+  doc["data"]["time"]["currentTime"] = currentTime;
+  doc["data"]["time"]["previousTime"] = previousTime;
+  
   doc["data"]["mpu_1"]["gyro"]["x"] = gyro_1.gyro.x;
   doc["data"]["mpu_1"]["gyro"]["y"] = gyro_1.gyro.y;
   doc["data"]["mpu_1"]["gyro"]["z"] = gyro_1.gyro.z;
