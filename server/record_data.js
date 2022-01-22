@@ -21,6 +21,8 @@ let samplesWrongNum = 0;
 let linesCorrect = 0;
 let linesWrong = 0;
 
+let timer = null;
+
 
 let myData = {};
 
@@ -45,6 +47,7 @@ port.on('error', (err) => {
 ioHook.on('keypress', function (msg) {
   if (!startedCorrect && msg.rawcode === 65) { //AAAAAA
     console.log('recording correct');
+    timer = process.hrtime();
     linesWrong = 0;
     gestureType = 'correct';
     startedCorrect = true;
@@ -53,6 +56,7 @@ ioHook.on('keypress', function (msg) {
     });
   } else if (!startedWrong && msg.rawcode === 66) { // BBBBBBBB
     console.log('recording wrong');
+    timer = process.hrtime();
     linesCorrect = 0;
     gestureType = 'wrong';
     startedWrong = true;
@@ -89,8 +93,6 @@ readLineParser.on('data', (data) => {
         myData.fsr_2 = comPortdataObject.data.fsr_2
       }
       if (comPortdataObject.client === 'back_top') {
-        myData.elapsedTime = comPortdataObject.data.time.elapsedTime;
-
         myData.gyrox_1 = comPortdataObject.data.mpu_1.gyro.x
         myData.gyroy_1 = comPortdataObject.data.mpu_1.gyro.y
         myData.gyroz_1 = comPortdataObject.data.mpu_1.gyro.z
@@ -121,13 +123,14 @@ readLineParser.on('data', (data) => {
         myData.accelz_4 = comPortdataObject.data.mpu_2.accel.z
       }
     }
-    if (myData.elapsedTime && myData.fsr_2 && myData.fsr_2 && myData.gyrox_1 && myData.gyroy_1 && myData.gyroz_1 && myData.gyrox_2 && myData.gyroy_2 && myData.gyroz_2 && myData.gyrox_3 && myData.gyroy_3 && myData.gyroz_3 && myData.gyrox_4 && myData.gyroy_4 && myData.gyroz_4 && myData.accelx_1 && myData.accely_1 && myData.accelz_1 && myData.accelx_2 && myData.accely_2 && myData.accelz_2 && myData.accelx_3 && myData.accely_3 && myData.accelz_3 && myData.accelx_4 && myData.accely_4 && myData.accelz_4) {
+    if (myData.fsr_2 && myData.fsr_2 && myData.gyrox_1 && myData.gyroy_1 && myData.gyroz_1 && myData.gyrox_2 && myData.gyroy_2 && myData.gyroz_2 && myData.gyrox_3 && myData.gyroy_3 && myData.gyroz_3 && myData.gyrox_4 && myData.gyroy_4 && myData.gyroz_4 && myData.accelx_1 && myData.accely_1 && myData.accelz_1 && myData.accelx_2 && myData.accely_2 && myData.accelz_2 && myData.accelx_3 && myData.accely_3 && myData.accelz_3 && myData.accelx_4 && myData.accely_4 && myData.accelz_4) {
+      let elapsedTime = (process.hrtime(timer)[1] / 1000000).toFixed(2);
       if (startedCorrect && linesCorrect <= MAX_LINES) {
-        streamCorrect.write(`${myData.elapsedTime} ${myData.fsr_1} ${myData.fsr_2} ${myData.gyrox_1} ${myData.gyroy_1} ${myData.gyroz_1} ${myData.gyrox_2} ${myData.gyroy_2} ${myData.gyroz_2} ${myData.gyrox_3} ${myData.gyroy_3} ${myData.gyroz_3} ${myData.gyrox_4} ${myData.gyroy_4} ${myData.gyroz_4} ${myData.accelx_1} ${myData.accely_1} ${myData.accelz_1} ${myData.accelx_2} ${myData.accely_2} ${myData.accelz_2} ${myData.accelx_3} ${myData.accely_3} ${myData.accelz_3} ${myData.accelx_4} ${myData.accely_4} ${myData.accelz_4}\r\n`);
+        streamCorrect.write(`${elapsedTime} ${myData.fsr_1} ${myData.fsr_2} ${myData.gyrox_1} ${myData.gyroy_1} ${myData.gyroz_1} ${myData.gyrox_2} ${myData.gyroy_2} ${myData.gyroz_2} ${myData.gyrox_3} ${myData.gyroy_3} ${myData.gyroz_3} ${myData.gyrox_4} ${myData.gyroy_4} ${myData.gyroz_4} ${myData.accelx_1} ${myData.accely_1} ${myData.accelz_1} ${myData.accelx_2} ${myData.accely_2} ${myData.accelz_2} ${myData.accelx_3} ${myData.accely_3} ${myData.accelz_3} ${myData.accelx_4} ${myData.accely_4} ${myData.accelz_4}\r\n`);
         linesCorrect++;
       }
       if (startedWrong && linesWrong <= MAX_LINES) {
-        streamWrong.write(`${myData.elapsedTime} ${myData.fsr_1} ${myData.fsr_2} ${myData.gyrox_1} ${myData.gyroy_1} ${myData.gyroz_1} ${myData.gyrox_2} ${myData.gyroy_2} ${myData.gyroz_2} ${myData.gyrox_3} ${myData.gyroy_3} ${myData.gyroz_3} ${myData.gyrox_4} ${myData.gyroy_4} ${myData.gyroz_4} ${myData.accelx_1} ${myData.accely_1} ${myData.accelz_1} ${myData.accelx_2} ${myData.accely_2} ${myData.accelz_2} ${myData.accelx_3} ${myData.accely_3} ${myData.accelz_3} ${myData.accelx_4} ${myData.accely_4} ${myData.accelz_4}\r\n`);
+        streamWrong.write(`${elapsedTime} ${myData.fsr_1} ${myData.fsr_2} ${myData.gyrox_1} ${myData.gyroy_1} ${myData.gyroz_1} ${myData.gyrox_2} ${myData.gyroy_2} ${myData.gyroz_2} ${myData.gyrox_3} ${myData.gyroy_3} ${myData.gyroz_3} ${myData.gyrox_4} ${myData.gyroy_4} ${myData.gyroz_4} ${myData.accelx_1} ${myData.accely_1} ${myData.accelz_1} ${myData.accelx_2} ${myData.accely_2} ${myData.accelz_2} ${myData.accelx_3} ${myData.accely_3} ${myData.accelz_3} ${myData.accelx_4} ${myData.accely_4} ${myData.accelz_4}\r\n`);
         linesWrong++;
       }
       myData = {};
