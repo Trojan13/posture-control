@@ -10,7 +10,7 @@ let numClasses = movementClasses.length;
 let numSamplesPerGesture = 30;
 let totalNumDataFiles = numSamplesPerGesture * numClasses;
 let numPointsOfData = 14;
-let numLinesPerFile = 21;
+let numLinesPerFile = 20;
 let totalNumDataPerFile = numPointsOfData * numLinesPerFile;
 
 console.log("totalNumDataFiles:", totalNumDataFiles);
@@ -25,11 +25,11 @@ function readFile(file) {
       if (err) {
         reject(err);
       } else {
-        lineReader.eachLine(`./data/${file}`, function (line) {
+        const linesArray = data.toString().split("\n");
+        linesArray.map((line) => {
           let dataArray = line.split(" ").map(arrayItem => parseFloat(arrayItem));
           allFileData.push(...dataArray);
           let concatArray = [...allFileData];
-          //console.log(concatArray.length);
           if (concatArray.length === totalNumDataPerFile) {
             let label = file.split("_")[1];
             let labelIndex = movementClasses.indexOf(label)
@@ -50,18 +50,13 @@ const readDir = () =>
 (async () => {
   const filenames = await readDir();
   let allData = [];
-  console.log(filenames.length);
 
   filenames.map(async file => { // 75 times
     let originalContent = await readFile(file);
-    console.log(originalContent);
-
     allData.push(originalContent);
-    console.log(allData.length);
 
     if (allData.length === totalNumDataFiles) {
       format(allData)
-      console.log("aaaaa");
     }
   })
 })();
@@ -157,8 +152,8 @@ const split = (featuresTensor, labelsTensor, testSplit) => {
 
 const createModel = async (xTrain, yTrain, xTest, yTest) => {
   const params = {
-    learningRate: 0.1,
-    epochs: 40
+    learningRate: 0.01,
+    epochs: 100
   };
   // Define the topology of the model: two dense layers.
   const model = tf.sequential();
@@ -184,6 +179,6 @@ const createModel = async (xTrain, yTrain, xTest, yTest) => {
     validationData: [xTest, yTest],
   });
 
-  //await model.save('file://model');
+  await model.save('file://model');
   return model;
 }
