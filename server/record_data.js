@@ -124,7 +124,7 @@ readLineParser.on('data', (data) => {
       }
     }
     if (myData.fsr_2 && myData.fsr_2 && myData.gyrox_1 && myData.gyroy_1 && myData.gyroz_1 && myData.gyrox_2 && myData.gyroy_2 && myData.gyroz_2 && myData.gyrox_3 && myData.gyroy_3 && myData.gyroz_3 && myData.gyrox_4 && myData.gyroy_4 && myData.gyroz_4 && myData.accelx_1 && myData.accely_1 && myData.accelz_1 && myData.accelx_2 && myData.accely_2 && myData.accelz_2 && myData.accelx_3 && myData.accely_3 && myData.accelz_3 && myData.accelx_4 && myData.accely_4 && myData.accelz_4) {
-      let elapsedTime = new Date() - startTime;
+      let elapsedTime = new Date() - timer;
       if (startedCorrect && linesCorrect <= MAX_LINES) {
         streamCorrect.write(`${elapsedTime} ${myData.fsr_1} ${myData.fsr_2} ${myData.gyrox_1} ${myData.gyroy_1} ${myData.gyroz_1} ${myData.gyrox_2} ${myData.gyroy_2} ${myData.gyroz_2} ${myData.gyrox_3} ${myData.gyroy_3} ${myData.gyroz_3} ${myData.gyrox_4} ${myData.gyroy_4} ${myData.gyroz_4} ${myData.accelx_1} ${myData.accely_1} ${myData.accelz_1} ${myData.accelx_2} ${myData.accely_2} ${myData.accelz_2} ${myData.accelx_3} ${myData.accely_3} ${myData.accelz_3} ${myData.accelx_4} ${myData.accely_4} ${myData.accelz_4}\r\n`);
         linesCorrect++;
