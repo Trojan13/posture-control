@@ -1,5 +1,6 @@
 # Posture Control
 A project within the module "ubiqutous computing". The aim of the project is to create a system that controls the posture of a user when lifting heavy objects and gives suggestions for improvement.
+https://youtu.be/2RV6aqpohyI
 
 ## Sub-Goals
 
